@@ -1,0 +1,541 @@
+# 超级计算器
+import tkinter as tk
+import tkinter.ttk as ttk
+import tkinter.messagebox
+from tkinter.scrolledtext import ScrolledText
+import math, ctypes, re
+
+root = tk.Tk()
+root.title("超级计算器 | 插件 super.pyl")
+root.geometry("490x560+200+100")
+
+init = tk.Label(root, text="初始化插件中……\n请耐心等待1分钟\n加载完成后自动进入界面", font=("微软雅黑", 30, "bold"))
+init.place(x=30, y=150)
+
+# 科目选项卡
+subject = ttk.Notebook(root)
+maths = tk.Frame(subject)
+physics = tk.Frame(subject)
+about = tk.Frame(subject)
+subject.add(maths, text="数学")
+subject.add(physics, text="物理")
+subject.add(about, text="关于")
+
+# 数学算法
+class subject_math:
+    def __init__(self):
+        self.info = None
+        self.h = None
+        self.S = None
+        self.P = None
+        self.RAD = None
+        self.ANGLE = None
+
+        self.C = None
+        self.S = None
+        self.r = None
+        self.d = None
+
+    def _circle(self):
+        global circle_S, circle_d, circle_C, circle_r, circle, math
+        global C, S, r, d
+        try:
+            self.C.config(text="")
+            self.S.config(text="")
+            self.r.config(text="")
+            self.d.config(text="")
+        except:
+            pass
+        if circle_C.get().strip() != "":
+            c = float(circle_C.get())
+            self.C = tk.Label(circle,
+                         text=f"∵ 周长C = {c} m",
+                         font=("微软雅黑", 15, "bold"))
+            self.C.place(x=30, y=140)
+            self.d = tk.Label(circle,
+                         text=f"∴ 直径d = C÷π = {c / math.pi} m",
+                         font=("微软雅黑", 15, "bold"))
+            self.d.place(x=30, y=170)
+            self.r = tk.Label(circle,
+                         text=f"∴ 直径r = d÷2 = {c / math.pi / 2} m",
+                         font=("微软雅黑", 15, "bold"))
+            self.r.place(x=30, y=200)
+            self.S = tk.Label(circle,
+                         text=f"∴ 面积S = πr² = {math.pi * ((c / math.pi / 2) ** 2)} ㎡",
+                         font=("微软雅黑", 15, "bold"))
+            self.S.place(x=30, y=230)
+
+        elif circle_S.get().strip() != "":
+            s = float(circle_S.get())
+            self.S = tk.Label(circle,
+                              text=f"∵ 面积S = {s} ㎡",
+                              font=("微软雅黑", 15, "bold"))
+            self.S.place(x=30, y=140)
+            self.r = tk.Label(circle,
+                              text=f"∴ 半径r = √S÷π = {math.sqrt(s / math.pi)} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.r.place(x=30, y=170)
+            self.d = tk.Label(circle,
+                              text=f"∴ 直径d = 2r = {math.sqrt(s / math.pi) * 2} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.d.place(x=30, y=200)
+            self.C = tk.Label(circle,
+                              text=f"∴ 周长C = πd = {math.pi * (math.sqrt(s / math.pi) * 2)} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.C.place(x=30, y=230)
+
+        elif circle_r.get().strip() != "":
+            rs = float(circle_r.get())
+            self.r = tk.Label(circle,
+                         text=f"∵ 半径r = {rs} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.r.place(x=30, y=140)
+            self.d = tk.Label(circle,
+                         text=f"∴ 直径d = 2r = {2 * rs} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.d.place(x=30, y=170)
+            self.C = tk.Label(circle,
+                         text=f"∴ 周长C = 2rπ = {2 * rs * math.pi} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.C.place(x=30, y=200)
+            self.S = tk.Label(circle,
+                         text=f"∴ 面积S = πr² ={math.pi * (rs ** 2)} ㎡",
+                              font=("微软雅黑", 15, "bold"))
+            self.S.place(x=30, y=230)
+
+
+        else:
+            ds = float(circle_d.get())
+            self.d = tk.Label(circle,
+                              text=f"∵ 直径d = {ds} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.d.place(x=30, y=140)
+            self.r = tk.Label(circle,
+                              text=f"∴ 半径r = d÷2 = {ds / 2} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.r.place(x=30, y=170)
+            self.C = tk.Label(circle,
+                              text=f"∴ 周长C = dπ = {ds * math.pi} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.C.place(x=30, y=200)
+            self.S = tk.Label(circle,
+                              text=f"∴ 面积S = π(d÷2)² ={math.pi * ((ds / 2) ** 2)} ㎡",
+                              font=("微软雅黑", 15, "bold"))
+            self.S.place(x=30, y=230)
+
+    def _triangle(self):
+        global line_1, line_2, line_3, work, triangle, math, root, clearbtn
+        if line_1.get().strip() == "" or line_2.get().strip() == "" or line_3.get().strip() == "":
+            tkinter.messagebox.showerror("错误", "你没有输入边长或者边长不对，导致无法计算结果")
+            return
+        try:
+            a = float(eval(line_1.get().replace("^", "**").replace("x", "*")))
+            b = float(eval(line_2.get().replace("^", "**").replace("x", "*")))
+            c = float(eval(line_3.get().replace("^", "**").replace("x", "*")))
+        except:
+            tkinter.messagebox.showerror("表达式错误",
+                                         "你输入的表达式有错误，请仔细核对并输入正确的值。\n提示：\n1、如果含有高等数学运算请加上math.例如math.cos(5)\n2、'除以'、'乘'、'次方'在计算机中是分别是'/'、'*'(x)、'**'(^)符号\n3、请不要包含字母！")
+            return
+        if not a + b > c or not b + c > a or not c + a > b:
+            if tkinter.messagebox.askyesno("三角形错误", "你输入的边长可能无法拼凑成一个三角形，你想要强行运算吗？"):
+                pass
+            else:
+                return
+        root.geometry("700x560")
+        clearbtn.place(x=500, y=400)
+        work.place(x=600, y=400)
+        try:
+            self.info.config(text="")
+            self.h.config(text="")
+            self.P.config(text="")
+            self.S.config(text="")
+            self.RAD.config(text="")
+            self.ANGLE.config(text="")
+        except:
+            pass
+        try:
+            self.info = tk.Label(triangle, text=f"∵ a={a} m, b={b} m, c={c} m", font=("微软雅黑", 15, "bold"))
+            self.info.place(x=30, y=80)
+
+            self.h = tk.Label(triangle,
+                              text=f"∴ 高度H = 2*S△÷2 = {2 * (math.sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c)) / 4) / a} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.h.place(x=30, y=110)
+
+            self.P = tk.Label(triangle,
+                              text=f"∴ 周长P = a+b+c = {a + b + c} m",
+                              font=("微软雅黑", 15, "bold"))
+            self.P.place(x=30, y=140)
+
+            self.S = tk.Label(triangle,
+                              text=f"∴ 面积S = √[p(p-a)(p-b)(p-c)] = {math.sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c)) / 4} ㎡",
+                              font=("微软雅黑", 15, "bold"))
+            self.S.place(x=30, y=170)
+
+            self.RAD = tk.Label(triangle,
+                                text=f"∴ α = acos((b²+c²-a²)÷(2*b*c)) = {math.acos((pow(b, 2) + pow(c, 2) - pow(a, 2)) / (2 * b * c))} Rad\n∴ β = acos((a²+c²-b²)÷(2*a*c)) = {math.acos((pow(a, 2) + pow(c, 2) - pow(b, 2)) / (2 * a * c))} Rad\n∴ γ = acos((a²+b²-c²)÷(2*a*b)) = {math.acos((pow(a, 2) + pow(b, 2) - pow(c, 2)) / (2 * a * b))} Rad\n",
+                                font=("微软雅黑", 15, "bold"))
+            self.RAD.place(x=30, y=210)
+            self.ANGLE = tk.Label(triangle,
+                                  text=f"∴ ∠α = ∠A = α*180÷π = {math.acos((pow(b, 2) + pow(c, 2) - pow(a, 2)) / (2 * b * c)) * 180 / math.pi}°\n∴ ∠β = ∠B = β*180÷π = {math.acos((pow(a, 2) + pow(c, 2) - pow(b, 2)) / (2 * a * c)) * 180 / math.pi}°\n∴ ∠γ = ∠C= γ*180÷π= {math.acos((pow(a, 2) + pow(b, 2) - pow(c, 2)) / (2 * a * b)) * 180 / math.pi}°",
+                                  font=("微软雅黑", 15, "bold"))
+            self.ANGLE.place(x=30, y=310)
+        except:
+            tkinter.messagebox.showerror("三角形错误", "你输入的值可能无法拼凑成三角形或者值过于的大")
+
+    def result_clear(self) -> None:
+        global root, work, clearbtn
+        root.geometry("490x560")
+        work.place(x=400, y=100)
+        clearbtn.place(x=300, y=100)
+        try:
+            self.info.config(text="")
+            self.h.config(text="")
+            self.P.config(text="")
+            self.S.config(text="")
+            self.RAD.config(text="")
+            self.ANGLE.config(text="")
+        except:
+            pass
+
+
+# 物理算法
+class subject_physics:
+    class _mechanics:
+        def __init__(self):
+            self.Midu = None
+            self.ZhiLiang = None
+            self.Tiji = None
+
+        def density(self):
+            global Midu, ZhiLiang, Tiji, root, density
+            try:
+                self.Midu.config(text="")
+                self.ZhiLiang.config(text="")
+                self.Tiji.config(text="")
+            except:
+                pass
+            if Midu.get().strip() != "" and Tiji.get().strip() != "":
+                p = float(Midu.get())
+                v = float(Tiji.get())
+                self.Midu = tk.Label(density,
+                            text=f"∵ ρ = {p} kg/m³   v = {v} m³",
+                            font=("微软雅黑", 15, "bold"))
+                self.Midu.place(x=30, y=180)
+                self.ZhiLiang = tk.Label(density,
+                            text=f"质量m = ρv = {p*v} kg",
+                            font=("微软雅黑", 15, "bold"))
+                self.ZhiLiang.place(x=30, y=210)
+            elif ZhiLiang.get().strip() != "" and Tiji.get().strip() != "":
+                m = float(ZhiLiang.get())
+                v = float(Tiji.get())
+                self.Tiji = tk.Label(density,
+                                     text=f"∵ m = {m} kg   v = {v} m³",
+                                     font=("微软雅黑", 15, "bold"))
+                self.Tiji.place(x=30, y=180)
+                self.Midu = tk.Label(density,
+                                         text=f"密度ρ = m÷v = {m/v} kg/m³",
+                                         font=("微软雅黑", 15, "bold"))
+                self.Midu.place(x=30, y=210)
+            elif ZhiLiang.get().strip() != "" and Midu.get().strip() != "":
+                m = float(ZhiLiang.get())
+                p = float(Midu.get())
+                self.ZhiLiang = tk.Label(density,
+                                     text=f"∵ m = {m} kg   ρ = {p} kg/m³",
+                                     font=("微软雅黑", 15, "bold"))
+                self.ZhiLiang.place(x=30, y=180)
+                self.Tiji = tk.Label(density,
+                                         text=f"体积v = m÷ρ = {m/p} kg",
+                                         font=("微软雅黑", 15, "bold"))
+                self.Tiji.place(x=30, y=210)
+
+    class _calorifics:
+        pass
+
+    class _electricity:
+        pass
+
+subject_math = subject_math()
+subject_physics = subject_physics()
+
+tk.Label(about, text="超级无敌霹雳牛β旋风计算器 Plus", font=("微软雅黑", 20, "bold")).pack()
+tk.Label(about, text="\t\t\t\t\t——制作：张嘉祺", font=("微软雅黑", 10, "bold")).place(x=5,y=45)
+tk.Label(about, text="一些说明：", font=("微软雅黑", 13, "bold")).place(x=5,y=75)
+about_plugins = """        用来计算数学图像和物理公式的，同时兼备计算器功能；
+因为是专门给触屏写的，所以计算器对于鼠标用户不是很友好:)
+
+部分功能因为硬件会导致部分功能未响应/卡顿；
+暂时为了计算机考虑默认数值精度只有2，默认计算精度只有15
+后面会提升精度4/30位 -> 8/45位
+
+物理正在赶进度……敬请期待！
+"""
+tk.Label(about, text=about_plugins, font=("微软雅黑", 11, "bold"), anchor="w", justify=tk.LEFT).place(x=10,y=105)
+
+# 物理科目选项卡
+tab_control_physics = ttk.Notebook(physics)
+mechanics = tk.Frame(tab_control_physics)
+calorifics = tk.Frame(tab_control_physics)
+electricity = tk.Frame(tab_control_physics)
+tab_control_physics.add(mechanics, text="力学")
+tab_control_physics.add(calorifics, text="热学")
+tab_control_physics.add(electricity, text="电学")
+
+# 力学
+physics_mechanics = ttk.Notebook(mechanics)
+speed = tk.Frame(physics_mechanics)
+quality = tk.Frame(physics_mechanics)
+density = tk.Frame(physics_mechanics)
+lever = tk.Frame(physics_mechanics)
+gravity = tk.Frame(physics_mechanics)
+buoyancy = tk.Frame(physics_mechanics)
+movable = tk.Frame(physics_mechanics)
+pulley = tk.Frame(physics_mechanics)
+pressure = tk.Frame(physics_mechanics)
+power = tk.Frame(physics_mechanics)
+physics_mechanics.add(speed, text="速度")
+physics_mechanics.add(quality, text="质量")
+physics_mechanics.add(density, text="密度")
+_mechanics = subject_physics._mechanics()
+tk.Label(density,
+         text="换算进制：\n密度ρ = 1g/cm³ = 1000kg/m³\n质量m = 1kg = 1000g\n体积v = 1m³ = 1000dm³\n体积v = 1L = 1000mL(cm³)",
+         font=("微软雅黑", 15, "bold"), fg="red").place(x=100, y=300)
+tk.Label(density, text="密度ρ = \t\t\tm³/kg").place(x=140, y=5)
+value = []
+for i in range(100):
+    for j in range(101):
+        if j != 100:
+            value.append(str(i)+"."+str(j).zfill(2))
+Midu = ttk.Combobox(density, values=value, width=10)
+Midu.place(x=200, y=5)
+tk.Label(density, text="质量m = \t\t\tkg").place(x=5, y=40)
+ZhiLiang = ttk.Combobox(density, values=value, width=10)
+ZhiLiang.place(x=65, y=40)
+tk.Label(density, text="体积V = \t\t\tm³").place(x=250, y=40)
+Tiji = ttk.Combobox(density, values=value, width=10)
+Tiji.place(x=315, y=40)
+work = tk.Button(density, text="开始计算", bg='#252424', fg='white', command=_mechanics.density)
+work.place(x=400, y=100)
+
+physics_mechanics.add(lever, text="杠杆")
+physics_mechanics.add(speed, text="速度")
+physics_mechanics.add(gravity, text="重力")
+physics_mechanics.add(buoyancy, text="浮力")
+physics_mechanics.add(movable, text="动滑轮")
+physics_mechanics.add(pulley, text="滑轮组")
+physics_mechanics.add(pressure, text="压强")
+physics_mechanics.add(power, text="功率")
+
+# 热学
+physics_calorifics = ttk.Notebook(calorifics)
+absorb = tk.Frame(physics_calorifics)
+exothermic = tk.Frame(physics_calorifics)
+calor_value = tk.Frame(physics_calorifics)
+balance = tk.Frame(physics_calorifics)
+physics_calorifics.add(absorb, text="吸热")
+physics_calorifics.add(exothermic, text="放热")
+physics_calorifics.add(calor_value, text="热值")
+physics_calorifics.add(balance, text="热平衡")
+
+# 电学
+physics_electricity = ttk.Notebook(electricity)
+e_strength = tk.Frame(physics_electricity)
+resistance = tk.Frame(physics_electricity)
+physics_electricity.add(e_strength, text="电流强度")
+physics_electricity.add(resistance, text="电阻")
+
+# 数学科目选项卡
+tab_control_math = ttk.Notebook(maths)
+science = tk.Frame(tab_control_math)
+triangle = tk.Frame(tab_control_math)
+circle = tk.Frame(tab_control_math)
+tab_control_math.add(science, text="计算器")
+tab_control_math.add(triangle, text="三角形")
+tab_control_math.add(circle, text="圆形")
+
+tkinter.messagebox.showinfo("插件提示", "插件已经启动\n请等待初始化，该过程可能因为CPU算力导致等待时间过长……")
+tk.Label(science, text="科学计算器 - By 张嘉祺", font=("微软雅黑", 8, "bold")).pack()
+tk.Label(triangle, text="三角形计算器 Pro - By 张嘉祺", font=("微软雅黑", 10, "bold")).pack()
+
+
+# 圆形
+def Jiaodui(com1, com2, com3):
+    global Jiaodui
+    com1.set("")
+    com2.set("")
+    com3.set("")
+
+tk.Label(circle, text="面积S = \t\t\tm").place(x=5, y=10)
+circle_S = ttk.Combobox(circle, value=list(range(1, 2001)), width=10)
+circle_S.place(x=60, y=10)
+tk.Label(circle, text="周长C = \t\t\tm").place(x=200, y=10)
+circle_C = ttk.Combobox(circle, values=list(range(1, 2001)), width=10)
+circle_C.place(x=255, y=10)
+tk.Label(circle, text="半径r = \t\t\tm").place(x=5, y=45)
+circle_r = ttk.Combobox(circle, values=list(range(1, 2001)), width=10)
+circle_r.place(x=60, y=45)
+tk.Label(circle, text="直径d = \t\t\tm").place(x=200, y=45)
+circle_d = ttk.Combobox(circle, values=list(range(1, 2001)), width=10)
+circle_d.place(x=255, y=45)
+
+compute_btn = tk.Button(circle, text="开始计算", bg='#252424', fg='white', command=subject_math._circle)
+compute_btn.place(x=400, y=100)
+
+circle_S.bind("<<ComboboxSelected>>", lambda event: Jiaodui(circle_C, circle_r, circle_d))
+circle_C.bind("<<ComboboxSelected>>", lambda event: Jiaodui(circle_S, circle_d, circle_r))
+circle_r.bind("<<ComboboxSelected>>", lambda event: Jiaodui(circle_C, circle_S, circle_d))
+circle_d.bind("<<ComboboxSelected>>", lambda event: Jiaodui(circle_S, circle_C, circle_r))
+
+
+# 计算器
+def update(text_arr):
+    global ncol, bw, bh, padding, space, th, nrow
+    ncol, bw, bh, padding, space, th = 4, 100, 45, 20, 10, 100
+
+    nrow = math.ceil(len(text_arr) * 1.0 / ncol)
+    for index in range(len(text_arr)):
+        row_index, col_index = (index % ncol), (index // ncol)
+        btn = tkinter.Button(science, text=text_arr[index], font=("微软雅黑", 20),
+                             command=handler(add_word, text_arr[index]))
+        btn.place(x=padding + row_index * (bw + space), y=(th + padding * 2) + col_index * (bh + space), width=bw,
+                  height=bh)
+
+def add_word(c):
+    global txt, text_arr, update, science, handler, add_word
+    if c == '=':
+        try:
+            txt.replace(1.0, tk.END, eval(txt.get(1.0, tk.END)))
+        except SyntaxError as e:
+            tkinter.messagebox.showerror('错误',
+                                         f'表达式错误：{e}\n提示：\n1、你可能没有封闭括号。\n2、你可能输入了错误的符号或者字母\n3、你可能输入了错误的数学表达式，比如2///2\n4、………………')
+        except Exception as e:
+            tkinter.messagebox.showerror('错误',
+                                         f'未知错误，来自：{type(e)} {e}\n注意\n1、请仔细查看数学表达式是否错误\n2、联系开发者')
+    elif c == 'AC':
+        txt.delete(1.0, tk.END)
+    elif c == '<==':
+        strings = list(txt.get(1.0, tk.END))
+        txt.delete(1.0, tk.END)
+        txt.insert(1.0, ''.join(strings[:-2]))
+    elif c == 'EQUAL':
+        txt.insert(tk.END, "==")
+    elif c == 'MORE':
+        txt.insert(tk.END, ">")
+    elif c == 'LESS':
+        txt.insert(tk.END, "<")
+    elif c == 'π':
+        txt.insert(tk.END, "math.pi")
+
+    elif c == '1st':
+        text_arr = ['AC', '<==', 'π', '**', '1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', '.', '0', '=',
+                    '/', 'EQUAL', 'MORE', 'LESS', '2nd']
+        update(text_arr)
+
+    elif c == '2nd':
+        text_arr = ['√', '+', '-', '*', '/', '%', '**', '//', 'cos', 'sin', 'acos', 'asin', 'tan', 'atan', 'tanh',
+                    'log', 'e', '!', '=', '<==', '(', ')', 'π', '1st']
+        update(text_arr)
+
+    elif c == '√':
+        txt.insert(tk.END, 'math.sqrt(')
+    elif c == 'cos':
+        txt.insert(tk.END, "math.cos(")
+    elif c == 'sin':
+        txt.insert(tk.END, "math.sin(")
+    elif c == 'acos':
+        txt.insert(tk.END, "math.acos(")
+    elif c == 'asin':
+        txt.insert(tk.END, "math.asin(")
+    elif c == 'atan':
+        txt.insert(tk.END, "math.atan(")
+    elif c == 'log':
+        txt.insert(tk.END, "math.log(")
+    elif c == 'e':
+        txt.insert(tk.END, "math.e")
+    elif c == '!':
+        txt.insert(tk.END, "math.factorial(")
+    elif c == 'tanh':
+        txt.insert(tk.END, "math.tanh(")
+    else:
+        txt.insert('end', c)
+
+
+def handler(fun, c):
+    return lambda fun=fun, c=c: fun(c)
+
+
+text_arr = ['AC', '<==', 'π', '**', '1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', '.', '0', '=', '/',
+            'EQUAL', 'MORE', 'LESS', '2nd']
+
+ncol, bw, bh, padding, space, th = 4, 100, 45, 20, 10, 100
+
+nrow = math.ceil(len(text_arr) * 1.0 / ncol)
+txt = ScrolledText(science, font=("微软雅黑", 20, "bold"))
+txt.place(x=padding, y=padding, width=bw * ncol + space * (ncol - 1), height=th)
+
+for index in range(len(text_arr)):
+    row_index, col_index = (index % ncol), (index // ncol)
+    btn = tkinter.Button(science, text=text_arr[index], font=("微软雅黑", 20),
+                         command=handler(add_word, text_arr[index]))
+    btn.place(x=padding + row_index * (bw + space), y=(th + padding * 2) + col_index * (bh + space), width=bw,
+              height=bh)
+
+# 三角形
+def pythagorean():
+    a_ = []
+    b_ = []
+    c_ = []
+
+    def isPythagorean(a, b, c):
+        if a ** 2 + b ** 2 == c ** 2:
+            return True
+        else:
+            return False
+
+    def All(n):
+        for a in range(1, n + 1):
+            for b in range(1, n + 1):
+                for c in range(1, n + 1):
+                    if isPythagorean(a, b, c):
+                        a_.append(a)
+                        b_.append(b)
+                        c_.append(c)
+
+    All(100)
+    return [a_, b_, c_]
+
+def line_auto(line_1s, line_2s, line_3s):
+    global line_1, line_2, line_3, result, line_auto
+    current_value = line_1s.get()
+    line_2s.set(result[1][result[0].index(int(current_value))])
+    line_3s.set(result[2][result[0].index(int(current_value))])
+
+init.config(text="")
+tk.Label(triangle, text="a = \t\t   m").place(x=30, y=35)
+result = pythagorean()
+line_1 = ttk.Combobox(triangle, values=result[0], width=7)
+line_1.place(x=75, y=35)
+line_1.bind("<<ComboboxSelected>>", lambda event: line_auto(line_1, line_2, line_3))
+
+tk.Label(triangle, text="b = \t\t  m").place(x=180, y=35)
+line_2 = ttk.Combobox(triangle, values=result[1], width=7)
+line_2.place(x=220, y=35)
+line_2.bind("<<ComboboxSelected>>", lambda event: line_auto(line_2, line_1, line_3))
+
+tk.Label(triangle, text="c = \t\t  m").place(x=330, y=35)
+line_3 = ttk.Combobox(triangle, values=result[2], width=7)
+line_3.place(x=370, y=35)
+line_3.bind("<<ComboboxSelected>>", lambda event: line_auto(line_3, line_2, line_1))
+
+work = tk.Button(triangle, text="开始计算", bg='#252424', fg='white', command=subject_math._triangle)
+work.place(x=400, y=100)
+clearbtn = tk.Button(triangle, text="清除结果", bg='#252424', fg='white', command=subject_math.result_clear)
+clearbtn.place(x=300, y=100)
+
+subject.pack(expand=True, fill=tk.BOTH)
+tab_control_math.pack(expand=True, fill=tk.BOTH)
+tab_control_physics.pack(expand=True, fill=tk.BOTH)
+physics_mechanics.pack(expand=True, fill=tk.BOTH)
+physics_calorifics.pack(expand=True, fill=tk.BOTH)
+physics_electricity.pack(expand=True, fill=tk.BOTH)
+root.mainloop()

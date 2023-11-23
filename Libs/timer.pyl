@@ -1,0 +1,64 @@
+# 计时器
+import tkinter
+import tkinter.ttk
+import threading
+import winsound
+
+root = tkinter.Tk()
+root.title("计时器程序 - 等待计时 | 插件 - timer.pyl")
+root.resizable(False, False)
+
+hour = tkinter.ttk.Combobox(root, values=list(range(0, 25)), state="readonly")
+minutes = tkinter.ttk.Combobox(root, values=list(range(0, 60)), state="readonly")
+secound = tkinter.ttk.Combobox(root, values=list(range(0, 60)), state="readonly")
+hour.set(0)
+minutes.set(0)
+secound.set(0)
+hour.place(x=5,y=5)
+minutes.place(x=168,y=5)
+secound.place(x=331,y=5)
+root.geometry(f'500x200+500+0')
+
+def start_timer():
+    global root, sub, times, timer, time_split, hour, minutes, secound, start, winsound, threading
+    root.title("计时器程序 - 正在计时 | 插件 - timer.pyl")
+    start.destroy()
+    root.geometry(f'500x100+500+0')
+    times = f"{hour.get()}:{minutes.get()}:{secound.get()}"
+    time_split = times.split(":")
+    timer = tkinter.Label(root, text=times, font=("楷体", 45, "bold"), bg="black", fg="#00ff40")
+    timer.place(x=0,y=30)
+
+    def sub():
+        if time_split[0].zfill(2) == "00" and time_split[1].zfill(2) == "00" and time_split[2].zfill(2) == "00":
+            root.title("计时器程序 - 时间结束 | 插件 - timer.pyl")
+            root.geometry(f'500x230+500+0')
+            timer['font'] = ("楷体", 35, "bold")
+            timer['fg'] = "red"
+            timer['text'] = "==================\n=====时间结束======\n=====时间结束======\n=================="
+            def play_sound():
+            	winsound.PlaySound("./Libs/sounds/end.wav",winsound.SND_LOOP)
+            play = threading.Thread(target=play_sound)
+            play.start()
+            root.after(5500, root.destroy)
+
+        else:
+            if time_split[1].zfill(2) == "00" and time_split[2].zfill(2) == "00":
+                time_split[0] = str(int(time_split[0])-1)
+                time_split[1] = "59"
+                time_split[2] = "60"
+            if time_split[2].zfill(2) == "00" and time_split[1].zfill(2) != "00":
+                time_split[2] = "60"
+                time_split[1] = str(int(time_split[1])-1)
+            if time_split[1] == "00" and time_split[2].zfill(2) != "00" and time_split[0] != "00":
+                time_split[2] = "60"
+                time_split[0] = str(int(time_split[0])-1)
+            time_split[2] = str(int(time_split[2])-1).zfill(2)
+            timer['text'] = "还剩余  "+time_split[0].zfill(2)+":"+time_split[1].zfill(2)+":"+time_split[2].zfill(2)
+            root.after(1000, sub)
+    sub()
+
+start = tkinter.Button(root, text="开始计时", command=start_timer)
+start.place(x=400,y=100)
+root.mainloop()
+

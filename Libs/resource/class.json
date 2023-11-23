@@ -1,0 +1,422 @@
+{
+   "Monday": {
+      "1": {
+         "subject": "数学",
+         "starttime": "08:00:00",
+         "endtime": "08:40:00",
+         "describe": false
+      },
+      "2": {
+         "subject": "地理",
+         "starttime": "08:50:00",
+         "endtime": "09:30:00",
+         "describe": false
+      },
+      "3": {
+         "subject": "语文",
+         "starttime": "09:55:00",
+         "endtime": "10:35:00",
+         "describe": false
+      },
+      "4": {
+         "subject": "英语",
+         "starttime": "10:45:00",
+         "endtime": "11:25:00",
+         "describe": false
+      },
+      "5": {
+         "subject": "体育",
+         "starttime": "11:30:00",
+         "endtime": "12:05:00",
+         "describe": false
+      },
+      "0": {
+         "subject": "自习",
+         "starttime": "12:50:00",
+         "endtime": "14:10:00",
+         "describe": false
+      },
+      "6": {
+         "subject": "音乐",
+         "starttime": "14:30:00",
+         "endtime": "15:10:00",
+         "describe": false
+      },
+      "7": {
+         "subject": "班会",
+         "starttime": "15:20:00",
+         "endtime": "16:00:00",
+         "describe": false
+      },
+      "8": {
+         "subject": "道法",
+         "starttime": "16:10:00",
+         "endtime": "16:50:00",
+         "describe": false
+      },
+      "9": {
+         "subject": "语文",
+         "starttime": "17:00:00",
+         "endtime": "17:40:00",
+         "describe": false
+      },
+      "10": {
+         "subject": "自习",
+         "starttime": "17:45:00",
+         "endtime": "18:00:00",
+         "describe": false
+      },
+      "11": {
+         "subject": "自习",
+         "starttime": "18:50:00",
+         "endtime": "19:30:00",
+         "describe": false
+      },
+      "12": {
+         "subject": "语文",
+         "starttime": "19:40:00",
+         "endtime": "20:20:20",
+         "describe": false
+      },
+      "13": {
+         "subject": "语文",
+         "starttime": "20:30:00",
+         "endtime": "21:10:00",
+         "describe": false
+      }
+   },
+   "Tuesday": {
+      "1": {
+         "subject": "英语",
+         "starttime": "08:00:00",
+         "endtime": "08:40:00",
+         "describe": false
+      },
+      "2": {
+         "subject": "历史",
+         "starttime": "08:50:00",
+         "endtime": "09:30:00",
+         "describe": false
+      },
+      "3": {
+         "subject": "语文",
+         "starttime": "09:55:00",
+         "endtime": "10:35:00",
+         "describe": false
+      },
+      "4": {
+         "subject": "语文",
+         "starttime": "10:45:00",
+         "endtime": "11:25:00",
+         "describe": false
+      },
+      "5": {
+         "subject": "数学",
+         "starttime": "11:30:00",
+         "endtime": "12:05:00",
+         "describe": false
+      },
+      "0": {
+         "subject": "自习",
+         "starttime": "12:50:00",
+         "endtime": "14:10:00",
+         "describe": false
+      },
+      "6": {
+         "subject": "生物",
+         "starttime": "14:30:00",
+         "endtime": "15:10:00",
+         "describe": false
+      },
+      "7": {
+         "subject": "信息技术",
+         "starttime": "15:20:00",
+         "endtime": "16:00:00",
+         "describe": false
+      },
+      "8": {
+         "subject": "物理",
+         "starttime": "16:10:00",
+         "endtime": "16:50:00",
+         "describe": false
+      },
+      "9": {
+         "subject": "物理",
+         "starttime": "17:00:00",
+         "endtime": "17:40:00",
+         "describe": false
+      },
+      "10": {
+         "subject": "自习",
+         "starttime": "17:45:00",
+         "endtime": "18:00:00",
+         "describe": false
+      },
+      "11": {
+         "subject": "自习",
+         "starttime": "18:50:00",
+         "endtime": "19:30:00",
+         "describe": false
+      },
+      "12": {
+         "subject": "英语",
+         "starttime": "19:40:00",
+         "endtime": "20:20:20",
+         "describe": false
+      },
+      "13": {
+         "subject": "英语",
+         "starttime": "20:30:00",
+         "endtime": "21:10:00",
+         "describe": false
+      }
+   },
+   "Wednesday": {
+      "1": {
+         "subject": "数学",
+         "starttime": "08:00:00",
+         "endtime": "08:40:00",
+         "describe": false
+      },
+      "2": {
+         "subject": "英语",
+         "starttime": "08:50:00",
+         "endtime": "09:30:00",
+         "describe": false
+      },
+      "3": {
+         "subject": "语文",
+         "starttime": "09:55:00",
+         "endtime": "10:35:00",
+         "describe": false
+      },
+      "4": {
+         "subject": "历史",
+         "starttime": "10:45:00",
+         "endtime": "11:25:00",
+         "describe": false
+      },
+      "5": {
+         "subject": "物理",
+         "starttime": "11:30:00",
+         "endtime": "12:05:00",
+         "describe": false
+      },
+      "0": {
+         "subject": "自习",
+         "starttime": "12:50:00",
+         "endtime": "14:10:00",
+         "describe": false
+      },
+      "6": {
+         "subject": "道法",
+         "starttime": "14:30:00",
+         "endtime": "15:10:00",
+         "describe": false
+      },
+      "7": {
+         "subject": "地理",
+         "starttime": "15:20:00",
+         "endtime": "16:00:00",
+         "describe": false
+      },
+      "8": {
+         "subject": "美术",
+         "starttime": "16:10:00",
+         "endtime": "16:50:00",
+         "describe": false
+      },
+      "9": {
+         "subject": "数学",
+         "starttime": "17:00:00",
+         "endtime": "17:40:00",
+         "describe": false
+      },
+      "10": {
+         "subject": "自习",
+         "starttime": "17:45:00",
+         "endtime": "18:00:00",
+         "describe": false
+      },
+      "11": {
+         "subject": "自习",
+         "starttime": "18:50:00",
+         "endtime": "19:30:00",
+         "describe": false
+      },
+      "12": {
+         "subject": "数学",
+         "starttime": "19:40:00",
+         "endtime": "20:20:20",
+         "describe": false
+      },
+      "13": {
+         "subject": "数学",
+         "starttime": "20:30:00",
+         "endtime": "21:10:00",
+         "describe": false
+      }
+   },
+   "Thursday": {
+      "1": {
+         "subject": "英语",
+         "starttime": "08:00:00",
+         "endtime": "08:40:00",
+         "describe": false
+      },
+      "2": {
+         "subject": "英语",
+         "starttime": "08:50:00",
+         "endtime": "09:30:00",
+         "describe": false
+      },
+      "3": {
+         "subject": "物理",
+         "starttime": "09:55:00",
+         "endtime": "10:35:00",
+         "describe": false
+      },
+      "4": {
+         "subject": "数学",
+         "starttime": "10:45:00",
+         "endtime": "11:25:00",
+         "describe": false
+      },
+      "5": {
+         "subject": "生物",
+         "starttime": "11:30:00",
+         "endtime": "12:05:00",
+         "describe": false
+      },
+      "0": {
+         "subject": "自习",
+         "starttime": "12:50:00",
+         "endtime": "14:10:00",
+         "describe": false
+      },
+      "6": {
+         "subject": "体育",
+         "starttime": "14:30:00",
+         "endtime": "15:10:00",
+         "describe": false
+      },
+      "7": {
+         "subject": "音乐",
+         "starttime": "15:20:00",
+         "endtime": "16:00:00",
+         "describe": false
+      },
+      "8": {
+         "subject": "语文",
+         "starttime": "16:10:00",
+         "endtime": "16:50:00",
+         "describe": false
+      },
+      "9": {
+         "subject": "英语",
+         "starttime": "17:00:00",
+         "endtime": "17:40:00",
+         "describe": false
+      },
+      "10": {
+         "subject": "自习",
+         "starttime": "17:45:00",
+         "endtime": "18:00:00",
+         "describe": false
+      },
+      "11": {
+         "subject": "自习",
+         "starttime": "18:50:00",
+         "endtime": "19:30:00",
+         "describe": false
+      },
+      "12": {
+         "subject": "历/道",
+         "starttime": "19:40:00",
+         "endtime": "20:20:20",
+         "describe": false
+      },
+      "13": {
+         "subject": "历/道",
+         "starttime": "20:30:00",
+         "endtime": "21:10:00",
+         "describe": false
+      }
+   },
+   "Friday": {
+      "1": {
+         "subject": "英语",
+         "starttime": "08:00:00",
+         "endtime": "08:40:00",
+         "describe": false
+      },
+      "2": {
+         "subject": "语文",
+         "starttime": "08:50:00",
+         "endtime": "09:30:00",
+         "describe": false
+      },
+      "3": {
+         "subject": "数学",
+         "starttime": "09:55:00",
+         "endtime": "10:35:00",
+         "describe": false
+      },
+      "4": {
+         "subject": "数学",
+         "starttime": "10:45:00",
+         "endtime": "11:25:00",
+         "describe": false
+      },
+      "5": {
+         "subject": "健/综",
+         "starttime": "11:30:00",
+         "endtime": "12:05:00",
+         "describe": false
+      },
+      "0": {
+         "subject": "自习",
+         "starttime": "12:50:00",
+         "endtime": "14:10:00",
+         "describe": false
+      },
+      "6": {
+         "subject": "物理",
+         "starttime": "14:30:00",
+         "endtime": "15:10:00",
+         "describe": false
+      },
+      "7": {
+         "subject": "道法",
+         "starttime": "15:20:00",
+         "endtime": "16:00:00",
+         "describe": false
+      },
+      "8": {
+         "subject": "体育",
+         "starttime": "16:10:00",
+         "endtime": "16:50:00",
+         "describe": false
+      }
+   },
+   "Sunday": {
+      "1": {
+         "subject": "自习",
+         "starttime": "18:50:00",
+         "endtime": "19:30:00",
+         "describe": false
+      },
+      "2": {
+         "subject": "物理",
+         "starttime": "19:40:00",
+         "endtime": "20:20:20",
+         "describe": false
+      },
+      "3": {
+         "subject": "物理",
+         "starttime": "20:30:00",
+         "endtime": "21:10:00",
+         "describe": false
+      }
+   }
+}
