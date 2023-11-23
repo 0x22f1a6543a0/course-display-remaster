@@ -30,8 +30,8 @@
             > Save some program necessary function.\
             保存一些程序必要的函数
         2. resource
-           > Save and read some program necessary resource package.\
-           保存和读取一些程序必要的资源包
+            > Save and read some program necessary resource package.\
+            保存和读取一些程序必要的资源包
         3. other file
             > autoexec.cfg\
             super.pyl -> plugins\
