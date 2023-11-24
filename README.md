@@ -20,7 +20,7 @@
         2. Windows 11 32 bit
         > HIGHER
     - unsupport
-        > Windows 7
+        > Windows[revise.py](..%2FTest%2Frevise.py) 7
         1. Windows 7 <font color=red>**SOME VERSION**</font>
             > Reason: DLL cannot work
         > LOWER

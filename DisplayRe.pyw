@@ -10,6 +10,9 @@ import idlelib.colorizer as idc
 import idlelib.percolator as idp
 import ctypes, platform, re
 
+from PIL import Image, ImageTk, ImageFont, ImageDraw
+import os, threading, winsound
+
 language_config = configparser.ConfigParser()
 language_config.read("./Libs/resource/language.ini", encoding="utf-8")
 language_choose = configparser.ConfigParser()
@@ -78,10 +81,13 @@ class Clock(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         config = configparser.ConfigParser()
+        self.achieve = configparser.ConfigParser()
         try:
             config.read("./Libs/resource/settings.ini",encoding="utf-8")
+            self.achieve.read("./Libs/resource/achieve.ini",encoding="gb18030")
         except UnicodeDecodeError:
-            config.read("./Libs/resource/settings.ini",encoding="utf-8")
+            config.read("./Libs/resource/settings.ini",encoding="gb18030")
+            self.achieve.read("./Libs/resource/achieve.ini", encoding="gb18030")
 
         self.size = config.get("fgwindow","size")
         self.trans = config.get("fgwindow","trans")
@@ -125,6 +131,13 @@ class Clock(tk.Tk):
         self.geometry("+{0}+{1}".format(event.x_root, event.y_root))
 
     def _settings(self):
+        if self.achieve.get("finished", "OpenSetting") == "0":
+            self.achieve_(" 哟，这不设置吗？")
+            self.achieve.set("finished", "OpenSetting", "1")
+            with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
+                self.achieve.write(f)
+                f.close()
+
         def finish():
             w_config = configparser.ConfigParser()
             w_config.read("./Libs/resource/settings.ini",encoding="utf-8")
@@ -227,6 +240,12 @@ class Clock(tk.Tk):
         frame = Frame(other, borderwidth=2, relief="solid")
         frame.place(x=5,y=50)
         def execute():
+            if self.achieve.get("finished", "ExecPlugins") == "0":
+                self.achieve_("插件开辟新征程！")
+                self.achieve.set("finished", "ExecPlugins", "1")
+                with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
+                    self.achieve.write(f)
+                    f.close()
             info = tk.Tk()
             info.geometry(f"+{settings.winfo_x()+200}+{settings.winfo_y()+100}")
             info.overrideredirect(True)
@@ -282,7 +301,14 @@ class Clock(tk.Tk):
                     notebook.forget(3)
                     runner['text'] = "Run ▶"
                     runner['fg'] = "#41cc32"
+
                 except Exception as e:
+                    if self.achieve.get("finished", "fRunCode") == "0":
+                        self.achieve_("欸，技术尚待提升")
+                        self.achieve.set("finished", "fRunCode", "1")
+                        with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
+                            self.achieve.write(f)
+                            f.close()
                     error_note = Frame(notebook)
                     notebook.add(error_note, text="Running_Error")
                     Label(error_note, text="RUNNING ERROR:\n==============================\n\n"+str(type(e))+" -> "+str(e)+"\n\n==============================", font=("宋体", 12, "bold"), fg="red").pack()
@@ -296,6 +322,12 @@ class Clock(tk.Tk):
                     pass
                 finally:
                     notebook.forget(3)
+                if self.achieve.get("finished", "sRunCode") == "0":
+                    self.achieve_("原来你也会「编程」？！")
+                    self.achieve.set("finished", "sRunCode", "1")
+                    with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
+                        self.achieve.write(f)
+                        f.close()
 
         def auto_indent(event):
             text = event.widget
@@ -363,7 +395,69 @@ class Clock(tk.Tk):
     def _exit(self):
         os.system(f"taskkill /F /PID {os.getpid()}")
 
+    def achieve_(self, text="", subject=""):
+        def show_window():
+            def play_sound():
+                winsound.PlaySound("./Libs/resource/things/get.wav", winsound.SND_LOOP)
+
+            play = threading.Thread(target=play_sound)
+            play.start()
+            achieve.deiconify()
+            achieve.attributes("-alpha", 0)
+            gradually_show()
+
+        def gradually_close():
+            alpha = achieve.attributes("-alpha")
+            if alpha > 0:
+                alpha -= 0.05
+                achieve.attributes("-alpha", alpha)
+                achieve.after(40, gradually_close)
+            else:
+                achieve.tk.quit()
+                os.remove("A.png")
+
+        def gradually_show():
+            alpha = achieve.attributes("-alpha")
+            if alpha < 1:
+                alpha += 0.1
+                achieve.attributes("-alpha", alpha)
+                achieve.after(50, gradually_show)
+            else:
+                time.sleep(random.uniform(1, 2))
+                gradually_close()
+
+        def revise(text, subject):
+            img = Image.open('./Libs/resource/things/template.png')
+            I1 = ImageDraw.Draw(img)
+            I1.text((130, 50), f"{text} {subject}",
+                    font=ImageFont.truetype('./Libs/resource/things/Genshin.ttf', 20), fill=(108, 100, 97))
+            img.save("A.png")
+
+        revise(text=text, subject=subject)
+
+        achieve = tk.Tk()
+        achieve.withdraw()
+        achieve = tk.Toplevel()
+
+        achieve.attributes("-topmost", True)
+        achieve.overrideredirect(True)
+
+        image = tk.PhotoImage(file="A.png")
+        Label(achieve, image=image).pack()
+
+        achieve.geometry(f"+{(achieve.winfo_screenwidth() - 427) // 2}+{(achieve.winfo_screenheight() + 300) // 2}")
+        achieve.after(0, show_window)
+
+        achieve.mainloop()
+
     def update_time(self):
+        if self.achieve.get("finished", "OpenProgram") == "0":
+            self.achieve_(" 初次见面，请多关照")
+            self.achieve.set("finished", "OpenProgram", "1")
+            with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
+                self.achieve.write(f)
+                f.close()
+
         Ymd_time = datetime.datetime.now().strftime("%Y-%m-%d")
         now_time = datetime.datetime.now().strftime("%H:%M:%S")
         self.lbl.config(text=now_time)
