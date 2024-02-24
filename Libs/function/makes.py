@@ -27,7 +27,7 @@ class make:
                     "subject": subject_name,
                     "starttime": starttime,
                     "endtime": endtime,
-                    "describe": False
+                    "enable": True
                 }
         #return self._class
         return json.dumps(self._class,indent=3,ensure_ascii=False)
@@ -118,7 +118,7 @@ else:
 print("\n[*] 完成制作\n")
 
 print("\n[*] 开始写入json文件……\n")
-with open('class.json','w') as f:
+with open('../resource/class.json', 'w') as f:
     json.dump(data3,f,indent=3,ensure_ascii=False)
 print("[+++] 完成！")
 

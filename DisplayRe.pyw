@@ -53,7 +53,8 @@ if len(os.listdir("./Libs/resource")) >= 3:
         )
         exit(-1)
     try:
-        class_ = dict(json.loads(json_data))
+        class_ = json.loads(json_data)
+        del json_data
 
     except Exception as error:
         tkinter.messagebox.showerror("Error", f"Cannot evaluate the class.json file\n{type(error)} -> {error}")
@@ -119,18 +120,49 @@ class Clock(tk.Tk):
             language_config.get(languages, "statet")
         ]
 
-        with open("./Libs/autoexec.cfg", "r", encoding="utf-8") as f:
-            menudata = f.read()
-        for _ in menudata.strip().split("\n"):
-            self.release(f"./Libs/{_}")
-
-        del menudata
         # 设置的界面
         self.notebook = ttk.Notebook(self)
         self.basic_frame = tk.Frame(self.notebook)
         self.advanced_frame = tk.Frame(self.notebook)
+        self.class_frame = tk.Frame(self.notebook)
+
+        self.date_notebook = ttk.Notebook(self.class_frame)
+        self.Monday_frame = tk.Frame(self.date_notebook)
+        self.Tuesday_frame = tk.Frame(self.date_notebook)
+        self.Wednesday_frame = tk.Frame(self.date_notebook)
+        self.Thursday_frame = tk.Frame(self.date_notebook)
+        self.Friday_frame = tk.Frame(self.date_notebook)
+        self.Saturday_frame = tk.Frame(self.date_notebook)
+        self.Sunday_frame = tk.Frame(self.date_notebook)
         self.notebook.add(self.basic_frame, text=language_config.get(languages, "setfg"))
         self.notebook.add(self.advanced_frame, text=language_config.get(languages, "setfont"))
+        self.notebook.add(self.class_frame, text=language_config.get(languages, "curriculum"))
+        # 日期
+        self.date_notebook.add(self.Monday_frame, text=language_config.get(languages, "monday"))
+        self.date_notebook.add(self.Tuesday_frame, text=language_config.get(languages, "tuesday"))
+        self.date_notebook.add(self.Wednesday_frame, text=language_config.get(languages, "wednesday"))
+        self.date_notebook.add(self.Thursday_frame, text=language_config.get(languages, "thursday"))
+        self.date_notebook.add(self.Friday_frame, text=language_config.get(languages, "friday"))
+        self.date_notebook.add(self.Saturday_frame, text=language_config.get(languages, "saturday"))
+        self.date_notebook.add(self.Sunday_frame, text=language_config.get(languages, "sunday"))
+        # 课表设置
+        self.info_text = tk.Text(self.class_frame, width=45, height=5)
+        self.date_treeview_list = []
+        columns = {"ID": 50, "星期": 100, "科目名称": 80, "开始时间": 80, "结束时间": 80, "状态": 80}
+        for d in [
+            self.Monday_frame, self.Tuesday_frame,
+            self.Wednesday_frame, self.Thursday_frame,
+            self.Friday_frame, self.Saturday_frame,
+            self.Sunday_frame
+        ]:
+            tree = ttk.Treeview(d, show="headings", columns=list(columns))
+            for text, width in columns.items():
+                tree.heading(text, text=text, anchor='center')
+                tree.column(text, anchor='center', width=width, stretch=False)
+            self.date_treeview_list.append(tree)
+        del tree
+        self.status_btn = tk.Button(self.class_frame, text=language_config.get(languages, "disable"), command=Setting.change_status)
+
         # 基础设置
         self.size_font_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingsize"))
         self.size_font_combo = ttk.Combobox(
@@ -242,29 +274,35 @@ class Clock(tk.Tk):
                     self.end_time = class_info["endtime"]
                     state = self.get_state(start_time, self.end_time)
                     if state == self.states[0]:
-                        end = (datetime.datetime.strptime(
-                            self.end_time,
-                            '%H:%M:%S') -
-                               datetime.datetime.strptime(datetime.datetime.now().strftime("%H:%M:%S"),
-                                                          '%H:%M:%S')
-                               )
-                        after = str(end).split(":")
-                        after.insert(1, language_config.get(languages, "hour"))
-                        after.insert(3, language_config.get(languages, "minute"))
-                        after.insert(5, language_config.get(languages, "second"))
-                        for _ in range(2):
-                            for a in after:
-                                if str(a) == "0" or str(a) == "00":
-                                    index = after.index(a)
-                                    if after[index + 1] != language_config.get(languages, "second"):
-                                        after.remove(a)
-                                        after.pop(index)
-                                    del index
-                        after = ''.join(after)
-                        self.lbl.config(
-                            text=f"{time.strftime('%H:%M')} "
-                            f"{language_config.get(languages, 'after').replace('{time}', after)}"
-                        )
+                        if not class_info['enable'] and self.winfo_rootx() == 0:
+                            self.attributes("-alpha", 0.01)
+                            self.lbl.config(text="禁用状态")
+                        else:
+                            self.attributes("-alpha", self.trans)
+                            end = (datetime.datetime.strptime(
+                                self.end_time,
+                                '%H:%M:%S') -
+                                   datetime.datetime.strptime(
+                                       datetime.datetime.now().strftime("%H:%M:%S"),
+                                       '%H:%M:%S')
+                                   )
+                            after = str(end).split(":")
+                            after.insert(1, language_config.get(languages, "hour"))
+                            after.insert(3, language_config.get(languages, "minute"))
+                            after.insert(5, language_config.get(languages, "second"))
+                            for _ in range(2):
+                                for a in after:
+                                    if str(a) == "0" or str(a) == "00":
+                                        index = after.index(a)
+                                        if after[index + 1] != language_config.get(languages, "second"):
+                                            after.remove(a)
+                                            after.pop(index)
+                                        del index
+                            after = ''.join(after)
+                            self.lbl.config(
+                                text=f"{time.strftime('%m-%d')} {time.strftime('%H:%M')} "
+                                f"{language_config.get(languages, 'after').replace('{time}', after)}"
+                            )
                         break
                     elif state == self.states[1]:
                         self.lbl.config(text=f"{ymd_time} {self.get_week()} {now_time} {state} {self.subject}")
@@ -277,28 +315,6 @@ class Clock(tk.Tk):
     def alpha(self):
         self.click_times += 1
         self.attributes("-alpha", 0.2) if self.click_times % 2 == 1 else self.attributes("-alpha", self.trans)
-
-    @staticmethod
-    def inter(io):
-        with open(io, "r", encoding="utf-8") as f:
-            code = f.read()
-        mg = globals()
-        ml = locals()
-        exec(code, mg, ml)
-
-    def release(self, io):
-        try:
-            with open(io, "r", encoding="utf-8") as f:
-                name = f.read().split("\n")
-            try:
-                self.menu.insert_cascade(index=2, label=name[0].split("#")[1].strip(), command=lambda: self.inter(io))
-            except IndexError:
-                self.menu.insert_cascade(index=2, label="Unset", command=lambda: self.inter(io))
-            self.showmenu(self, self.menu)
-        except PermissionError:
-            pass
-        except OSError:
-            pass
 
     @staticmethod
     def get_week(week="none"):
@@ -341,7 +357,8 @@ class Clock(tk.Tk):
 class Setting(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.text = Clock.lbl['text']
+        self.selected = None
+        self.text = ""
         self.count = -1
         self.y = 0
         self.x = 0
@@ -349,6 +366,7 @@ class Setting(tk.Tk):
 
     def open(self):
         self.__init__()
+        self.text = Clock.lbl['text']
         Clock.Pause = True
         self.play_show()
 
@@ -381,8 +399,7 @@ class Setting(tk.Tk):
             Clock.attributes("-alpha", 1)
             Clock.lbl['text'] = (f"Display {language_config.get(languages, 'settings')}\n"
                                  f"first. Welcome to {time.strftime('%Y')}\n"
-                                 f"second\n"
-                                 f"\n"
+                                 f"second\n\n"
                                  f"Display by QQ: 2953911716\n"
                                  f"It's Free and open-source Software!\n"
                                  f"The Open-Source URL is on github.com")
@@ -435,6 +452,78 @@ class Setting(tk.Tk):
         )
         if isinstance(event, str):
             Clock.attributes("-alpha", float(event))
+
+    def change_status(self):
+        global class_
+        if Clock.status_btn['text'] == language_config.get(languages, "enable"):
+            class_[self.selected[1]][str(self.selected[0])]['enable'] = True
+        else:
+            if tkinter.messagebox.askyesno(
+                    language_config.get(languages, "settings_enable_title"),
+                    language_config.get(languages, "settings_enable_msg")
+            ):
+                class_[self.selected[1]][str(self.selected[0])]['enable'] = False
+        try:
+            with open(f'{os.getcwd()}/Libs/resource/class.json', 'w', encoding='utf-8') as f:
+                json.dump(class_, f, indent=3, ensure_ascii=False)
+        except UnicodeDecodeError:
+            try:
+                with open(f'{os.getcwd()}/Libs/resource/class.json', 'w', encoding='gb18030') as f:
+                    json.dump(class_, f, indent=3, ensure_ascii=False)
+            except UnicodeDecodeError:
+                tkinter.messagebox.showerror("Error", "Failed to save data")
+        self.update_class()
+
+    def swich(self):
+        for tree in Clock.date_treeview_list:
+            try:
+                try:
+                    items = tree.selection()[0]
+                except IndexError:
+                    continue
+                self.selected = tree.item(items)['values']
+                break
+            except UnboundLocalError:
+                continue
+        else:
+            return
+
+        Clock.info_text.insert(tk.END, f"{self.selected}\n")
+        Clock.info_text.yview_moveto(True)
+        Clock.info_text.update()
+        if self.selected[-1] == language_config.get(languages, "enable"):
+            Clock.status_btn['text'] = language_config.get(languages, "disable")
+        else:
+            Clock.status_btn['text'] = language_config.get(languages, "enable")
+
+        for tree in Clock.date_treeview_list:
+            try:
+                tree.selection_remove(tree.selection()[0])
+            except IndexError:
+                pass
+
+    @staticmethod
+    def update_class():
+        dates_day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        for tree in Clock.date_treeview_list:
+            tree.delete(*tree.get_children())
+        for date, fir_values in class_.items():
+            for index, values in fir_values.items():
+                res = [index, date]
+                for value in values.values():
+                    if value is True:
+                        res.append('启用')
+                    elif value is False:
+                        res.append("禁用")
+                    else:
+                        res.append(value)
+                Clock.date_treeview_list[
+                    dates_day.index(date)
+                ].insert(
+                    '',
+                    tk.END,
+                    values=res
+                )
 
     @staticmethod
     def apply():
@@ -523,6 +612,11 @@ class Setting(tk.Tk):
             x=int(language_config.get(languages, "mx")),
             y=int(language_config.get(languages, "bby")) * 2
         )
+        Clock.status_btn.place(x=400, y=300)
+        for tree in Clock.date_treeview_list:
+            tree.bind("<<TreeviewSelect>>", lambda event: self.swich())
+            tree.pack()
+        Clock.info_text.place(x=0, y=260)
         Clock.set_font_treeview.pack()
         Clock.cancel_btn.place(x=300, y=400)
         Clock.apply_btn.place(x=400, y=400)
@@ -531,9 +625,11 @@ class Setting(tk.Tk):
         Clock.state_font_combo.bind("<<ComboboxSelected>>", self.view)
         Clock.set_language_combo.bind("<<ComboboxSelected>>", self.view)
         Clock.notebook.pack(fill=tk.BOTH, expand=True)
+        Clock.date_notebook.pack(fill=tk.BOTH, expand=True)
+        self.update_class()
 
 
-Clock = Clock()
 Setting = Setting()
+Clock = Clock()
 if __name__ == '__main__':
     Clock.mainloop()

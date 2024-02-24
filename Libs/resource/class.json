@@ -1,422 +1,422 @@
 {
    "Monday": {
       "1": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "08:00:00",
          "endtime": "08:40:00",
-         "describe": false
+         "enable": true
       },
       "2": {
-         "subject": "µØÀí",
+         "subject": "åœ°ç†",
          "starttime": "08:50:00",
          "endtime": "09:30:00",
-         "describe": false
+         "enable": true
       },
       "3": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "09:55:00",
          "endtime": "10:35:00",
-         "describe": false
+         "enable": true
       },
       "4": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "10:45:00",
          "endtime": "11:25:00",
-         "describe": false
+         "enable": true
       },
       "5": {
-         "subject": "ÌåÓı",
+         "subject": "ä½“è‚²",
          "starttime": "11:30:00",
          "endtime": "12:05:00",
-         "describe": false
+         "enable": true
       },
       "0": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "12:50:00",
          "endtime": "14:10:00",
-         "describe": false
+         "enable": true
       },
       "6": {
-         "subject": "ÒôÀÖ",
+         "subject": "éŸ³ä¹",
          "starttime": "14:30:00",
          "endtime": "15:10:00",
-         "describe": false
+         "enable": true
       },
       "7": {
-         "subject": "°à»á",
+         "subject": "ç­ä¼š",
          "starttime": "15:20:00",
          "endtime": "16:00:00",
-         "describe": false
+         "enable": true
       },
       "8": {
-         "subject": "µÀ·¨",
+         "subject": "é“æ³•",
          "starttime": "16:10:00",
          "endtime": "16:50:00",
-         "describe": false
+         "enable": false
       },
       "9": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "17:00:00",
          "endtime": "17:40:00",
-         "describe": false
+         "enable": true
       },
       "10": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "17:45:00",
          "endtime": "18:00:00",
-         "describe": false
+         "enable": true
       },
       "11": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "18:50:00",
          "endtime": "19:30:00",
-         "describe": false
+         "enable": true
       },
       "12": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "19:40:00",
          "endtime": "20:20:20",
-         "describe": false
+         "enable": true
       },
       "13": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "20:30:00",
          "endtime": "21:10:00",
-         "describe": false
+         "enable": true
       }
    },
    "Tuesday": {
       "1": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "08:00:00",
          "endtime": "08:40:00",
-         "describe": false
+         "enable": true
       },
       "2": {
-         "subject": "ÀúÊ·",
+         "subject": "å†å²",
          "starttime": "08:50:00",
          "endtime": "09:30:00",
-         "describe": false
+         "enable": true
       },
       "3": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "09:55:00",
          "endtime": "10:35:00",
-         "describe": false
+         "enable": true
       },
       "4": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "10:45:00",
          "endtime": "11:25:00",
-         "describe": false
+         "enable": true
       },
       "5": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "11:30:00",
          "endtime": "12:05:00",
-         "describe": false
+         "enable": true
       },
       "0": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "12:50:00",
          "endtime": "14:10:00",
-         "describe": false
+         "enable": true
       },
       "6": {
-         "subject": "ÉúÎï",
+         "subject": "ç”Ÿç‰©",
          "starttime": "14:30:00",
          "endtime": "15:10:00",
-         "describe": false
+         "enable": true
       },
       "7": {
-         "subject": "ĞÅÏ¢¼¼Êõ",
+         "subject": "ä¿¡æ¯æŠ€æœ¯",
          "starttime": "15:20:00",
          "endtime": "16:00:00",
-         "describe": false
+         "enable": true
       },
       "8": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "16:10:00",
          "endtime": "16:50:00",
-         "describe": false
+         "enable": true
       },
       "9": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "17:00:00",
          "endtime": "17:40:00",
-         "describe": false
+         "enable": true
       },
       "10": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "17:45:00",
          "endtime": "18:00:00",
-         "describe": false
+         "enable": true
       },
       "11": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "18:50:00",
          "endtime": "19:30:00",
-         "describe": false
+         "enable": true
       },
       "12": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "19:40:00",
          "endtime": "20:20:20",
-         "describe": false
+         "enable": true
       },
       "13": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "20:30:00",
          "endtime": "21:10:00",
-         "describe": false
+         "enable": true
       }
    },
    "Wednesday": {
       "1": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "08:00:00",
          "endtime": "08:40:00",
-         "describe": false
+         "enable": true
       },
       "2": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "08:50:00",
          "endtime": "09:30:00",
-         "describe": false
+         "enable": true
       },
       "3": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "09:55:00",
          "endtime": "10:35:00",
-         "describe": false
+         "enable": true
       },
       "4": {
-         "subject": "ÀúÊ·",
+         "subject": "å†å²",
          "starttime": "10:45:00",
          "endtime": "11:25:00",
-         "describe": false
+         "enable": true
       },
       "5": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "11:30:00",
          "endtime": "12:05:00",
-         "describe": false
+         "enable": true
       },
       "0": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "12:50:00",
          "endtime": "14:10:00",
-         "describe": false
+         "enable": true
       },
       "6": {
-         "subject": "µÀ·¨",
+         "subject": "é“æ³•",
          "starttime": "14:30:00",
          "endtime": "15:10:00",
-         "describe": false
+         "enable": false
       },
       "7": {
-         "subject": "µØÀí",
+         "subject": "åœ°ç†",
          "starttime": "15:20:00",
          "endtime": "16:00:00",
-         "describe": false
+         "enable": true
       },
       "8": {
-         "subject": "ÃÀÊõ",
+         "subject": "ç¾æœ¯",
          "starttime": "16:10:00",
          "endtime": "16:50:00",
-         "describe": false
+         "enable": true
       },
       "9": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "17:00:00",
          "endtime": "17:40:00",
-         "describe": false
+         "enable": true
       },
       "10": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "17:45:00",
          "endtime": "18:00:00",
-         "describe": false
+         "enable": true
       },
       "11": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "18:50:00",
          "endtime": "19:30:00",
-         "describe": false
+         "enable": true
       },
       "12": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "19:40:00",
          "endtime": "20:20:20",
-         "describe": false
+         "enable": true
       },
       "13": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "20:30:00",
          "endtime": "21:10:00",
-         "describe": false
+         "enable": true
       }
    },
    "Thursday": {
       "1": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "08:00:00",
          "endtime": "08:40:00",
-         "describe": false
+         "enable": true
       },
       "2": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "08:50:00",
          "endtime": "09:30:00",
-         "describe": false
+         "enable": true
       },
       "3": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "09:55:00",
          "endtime": "10:35:00",
-         "describe": false
+         "enable": true
       },
       "4": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "10:45:00",
          "endtime": "11:25:00",
-         "describe": false
+         "enable": true
       },
       "5": {
-         "subject": "ÉúÎï",
+         "subject": "ç”Ÿç‰©",
          "starttime": "11:30:00",
          "endtime": "12:05:00",
-         "describe": false
+         "enable": true
       },
       "0": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "12:50:00",
          "endtime": "14:10:00",
-         "describe": false
+         "enable": true
       },
       "6": {
-         "subject": "ÌåÓı",
+         "subject": "ä½“è‚²",
          "starttime": "14:30:00",
          "endtime": "15:10:00",
-         "describe": false
+         "enable": true
       },
       "7": {
-         "subject": "ÒôÀÖ",
+         "subject": "éŸ³ä¹",
          "starttime": "15:20:00",
          "endtime": "16:00:00",
-         "describe": false
+         "enable": true
       },
       "8": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "16:10:00",
          "endtime": "16:50:00",
-         "describe": false
+         "enable": true
       },
       "9": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "17:00:00",
          "endtime": "17:40:00",
-         "describe": false
+         "enable": true
       },
       "10": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "17:45:00",
          "endtime": "18:00:00",
-         "describe": false
+         "enable": true
       },
       "11": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "18:50:00",
          "endtime": "19:30:00",
-         "describe": false
+         "enable": true
       },
       "12": {
-         "subject": "Àú/µÀ",
+         "subject": "å†/é“",
          "starttime": "19:40:00",
          "endtime": "20:20:20",
-         "describe": false
+         "enable": true
       },
       "13": {
-         "subject": "Àú/µÀ",
+         "subject": "å†/é“",
          "starttime": "20:30:00",
          "endtime": "21:10:00",
-         "describe": false
+         "enable": true
       }
    },
    "Friday": {
       "1": {
-         "subject": "Ó¢Óï",
+         "subject": "è‹±è¯­",
          "starttime": "08:00:00",
          "endtime": "08:40:00",
-         "describe": false
+         "enable": true
       },
       "2": {
-         "subject": "ÓïÎÄ",
+         "subject": "è¯­æ–‡",
          "starttime": "08:50:00",
          "endtime": "09:30:00",
-         "describe": false
+         "enable": true
       },
       "3": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "09:55:00",
          "endtime": "10:35:00",
-         "describe": false
+         "enable": true
       },
       "4": {
-         "subject": "ÊıÑ§",
+         "subject": "æ•°å­¦",
          "starttime": "10:45:00",
          "endtime": "11:25:00",
-         "describe": false
+         "enable": true
       },
       "5": {
-         "subject": "½¡/×Û",
+         "subject": "å¥/ç»¼",
          "starttime": "11:30:00",
          "endtime": "12:05:00",
-         "describe": false
+         "enable": true
       },
       "0": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "12:50:00",
          "endtime": "14:10:00",
-         "describe": false
+         "enable": true
       },
       "6": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "14:30:00",
          "endtime": "15:10:00",
-         "describe": false
+         "enable": true
       },
       "7": {
-         "subject": "µÀ·¨",
+         "subject": "é“æ³•",
          "starttime": "15:20:00",
          "endtime": "16:00:00",
-         "describe": false
+         "enable": false
       },
       "8": {
-         "subject": "ÌåÓı",
+         "subject": "ä½“è‚²",
          "starttime": "16:10:00",
-         "endtime": "21:07:40",
-         "describe": false
+         "endtime": "16:50:00",
+         "enable": true
       }
    },
    "Saturday": {
       "1": {
-         "subject": "×ÔÏ°",
+         "subject": "è‡ªä¹ ",
          "starttime": "07:50:00",
          "endtime": "19:30:00",
-         "describe": false
+         "enable": true
       },
       "2": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "19:40:00",
          "endtime": "20:20:20",
-         "describe": false
+         "enable": true
       },
       "3": {
-         "subject": "ÎïÀí",
+         "subject": "ç‰©ç†",
          "starttime": "20:30:00",
-         "endtime": "21:10:00",
-         "describe": false
+         "endtime": "23:10:00",
+         "enable": true
       }
    }
 }
