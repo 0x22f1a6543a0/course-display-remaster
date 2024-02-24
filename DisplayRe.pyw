@@ -161,7 +161,11 @@ class Clock(tk.Tk):
                 tree.column(text, anchor='center', width=width, stretch=False)
             self.date_treeview_list.append(tree)
         del tree
-        self.status_btn = tk.Button(self.class_frame, text=language_config.get(languages, "disable"), command=Setting.change_status)
+        self.status_btn = tk.Button(
+            self.class_frame,
+            text=language_config.get(languages, "disable"),
+            command=Setting.change_status
+        )
 
         # 基础设置
         self.size_font_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingsize"))
