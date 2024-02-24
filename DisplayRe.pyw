@@ -1,527 +1,321 @@
 # -*- coding: utf-8 -*-
 import os
+import time
+import datetime
+import json
+import configparser
 import tkinter as tk
+import tkinter.ttk as ttk
 import tkinter.messagebox
-from tkinter import Text, Label, Menu, PhotoImage, Scale, colorchooser, font, Listbox, Checkbutton
-from tkinter.ttk import Frame, Combobox, Notebook, Button
-from tkinter.scrolledtext import ScrolledText
-import time, random, datetime, json, configparser
-import idlelib.colorizer as idc
-import idlelib.percolator as idp
-import ctypes, platform, re
+import tkinter.colorchooser as colorchooser
+import tkinter.font as font
 
-from PIL import Image, ImageTk, ImageFont, ImageDraw
-import os, threading, winsound
+if len(os.listdir("./Libs/resource")) >= 3:
+    try:
+        language_config = configparser.ConfigParser()
+        language_config.read("./Libs/resource/language.ini", encoding="utf-8")
+        language_choose = configparser.ConfigParser()
+        language_choose.read("./Libs/resource/settings.ini", encoding="utf-8")
+        languages = language_choose.get("program", "language")
+        del language_choose
+    except Exception as error:
+        tkinter.messagebox.showerror("Error", f"During read configure file\n{type(error)} -> {error}")
+        exit(-1)
 
-language_config = configparser.ConfigParser()
-language_config.read("./Libs/resource/language.ini", encoding="utf-8")
-language_choose = configparser.ConfigParser()
-language_choose.read("./Libs/resource/settings.ini", encoding="utf-8")
-languages = language_choose.get("program", "language")
-if languages not in language_config.sections():
-    tkinter.messagebox.showerror("Error",f"not found the languages '{languages}' sections in languages.ini,\nPlease change the language option in the settings.ini file to the correct language option")
-    exit(0)
+    if languages not in language_config.sections():
+        tkinter.messagebox.showerror(
+            "Error",
+            f"not found the languages '{languages}' "
+            f"sections in languages.ini,\n"
+            f"Please change the language option in the settings.ini file to the correct language option"
+        )
+        exit(-1)
 
-try:
-    with open('./Libs/resource/class.json', 'r', encoding='utf-8') as json_file:
-        json_data = json_file.read()
+    try:
+        with open('./Libs/resource/class.json', 'r', encoding='utf-8') as json_file:
+            json_data = json_file.read()
 
-except UnicodeDecodeError:
-    with open('./Libs/resource/class.json', 'r', encoding='gb18030') as json_file:
-        json_data = json_file.read()
+    except UnicodeDecodeError:
+        try:
+            with open('./Libs/resource/class.json', 'r', encoding='gbk') as json_file:
+                json_data = json_file.read()
+        except UnicodeDecodeError:
+            tkinter.messagebox.showerror("Error", "No any encoding can encode the 'class.json'")
+            exit(-1)
 
-except:
-    tkinter.messagebox.showerror(language_config.get(language,"errrortitle"), language_config.get(language,"errrormsg"))
+    except OSError:
+        tkinter.messagebox.showerror(
+            language_config.get(
+                languages,
+                "errrortitle"
+            ),
+            language_config.get(languages, "errrormsg")
+        )
+        exit(-1)
+    try:
+        class_ = dict(json.loads(json_data))
 
-class_ = dict(json.loads(json_data))
+    except Exception as error:
+        tkinter.messagebox.showerror("Error", f"Cannot evaluate the class.json file\n{type(error)} -> {error}")
+        exit(-1)
 
-def starting():
-    def show_window():
-        starting.deiconify()
-        starting.attributes("-alpha", 0)
-        starting.after(1000, gradually_show)
+else:
+    lost_file = ""
+    listfile = os.listdir("./Libs/resource")
+    if "class.json" not in listfile:
+        lost_file = "class.json"
 
-    def gradually_close():
-        alpha = starting.attributes("-alpha")
-        if alpha > 0.5:
-            alpha -= 0.1
-            starting.attributes("-alpha", alpha)
-            starting.after(30, gradually_close)
-        else:
-            starting.destroy()
+    elif "settings.ini" not in listfile:
+        lost_file = "settings.ini"
 
-    def gradually_show():
-        alpha = starting.attributes("-alpha")
-        if alpha < 1:
-            alpha += 0.1
-            starting.attributes("-alpha", alpha)
-            starting.after(30, gradually_show)
-        else:
-            time.sleep(random.uniform(1,2))
-            gradually_close()
+    else:
+        lost_file = "language.ini"
+    tkinter.messagebox.showerror(
+        "Error",
+        f"The folder '{os.getcwd()}\\Libs\\resource "
+        f"impantant children files lost\n\n"
+        f"The folder length should be 4, but the folder length is {len(os.listdir('./Libs/resource'))}\n\n"
+        f"Maybe you lost {lost_file}"
+    )
+    exit(-1)
 
-    starting = tk.Tk()
-    starting.title("INIT PROGRAM")
-    starting.attributes("-topmost", 1)
-    starting.overrideredirect(True)
-    photo = PhotoImage(file="./Libs/resource/starting.png")
-    label = Label(starting, image=photo)
-    label.pack()
-    wight = 665
-    high = 250
-    x = starting.winfo_screenwidth()
-    y = starting.winfo_screenheight()
-    starting.geometry(f'{wight}x{high}+{int(round((x - wight) / 2, 0))}+{int(round((y - high) / 2, 0))}')
-
-    starting.withdraw()
-    starting.after(0, show_window)
-    starting.mainloop()
 
 class Clock(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        config = configparser.ConfigParser()
-        self.achieve = configparser.ConfigParser()
-        try:
-            config.read("./Libs/resource/settings.ini",encoding="utf-8")
-            self.achieve.read("./Libs/resource/achieve.ini",encoding="gb18030")
-        except UnicodeDecodeError:
-            config.read("./Libs/resource/settings.ini",encoding="gb18030")
-            self.achieve.read("./Libs/resource/achieve.ini", encoding="gb18030")
+        self.config = configparser.ConfigParser()
+        self.config.read(f"{os.getcwd()}/Libs/resource/settings.ini", encoding="utf-8")
 
-        self.size = config.get("fgwindow","size")
-        self.trans = config.get("fgwindow","trans")
-        self.fg_color = config.get("fgwindow","color")
-        self.type = config.get("fgwindow","type")
-        self.c = config.get("fgwindow","state")
+        self.size = self.config.get("fgwindow", "size")
+        self.trans = self.config.get("fgwindow", "trans")
+        self.fg_color = self.config.get("fgwindow", "color")
+        self.type = self.config.get("fgwindow", "type")
+        self.c = self.config.get("fgwindow", "state")
+        self.c = self.c.replace("{", "").replace("}", "").split(",")
+        self.bg_color = self.config.get("bgwindow", "color")
 
-        self.bg_color = config.get("bgwindow","color")
-
-        self.language = languages
-
-        self.dll = ctypes.cdll.LoadLibrary(fr'{os.getcwd()}\Libs\SYSTEM_WIN'+"".join(re.findall("[\d+]", platform.architecture()[0]))+".dll")
-        self.tk.call('tk', 'scaling', int(self.dll.GetScale()) / 75)
-
-        self.times = 0
-        self.subject = "未知"
-        self.end_time = ""
-        self.states = [language_config.get(self.language,"statef"), language_config.get(self.language,"states"), language_config.get(self.language,"statet")]
         self.attributes("-topmost", True)
         self.geometry(f"+0+0")
         self.overrideredirect(True)
-        self.attributes("-alpha", self.trans)
-        self.bind("<B1-Motion>", self.move)
+        self.attributes("-alpha", float(self.trans))
+
         self.lbl = tk.Label(self,
                             text="",
-                            font=(self.type, self.size, self.c),
+                            font=(self.type, self.size, [c for c in self.c]),
                             background=self.bg_color,
                             foreground=self.fg_color)
-        self.menu = Menu(self)
-        self.menu.add_cascade(label=language_config.get(self.language,'settings'),command=self._settings)
-        self.menu.add_cascade(label=language_config.get(self.language,'exit'),command=self._exit)
+        self.menu = tk.Menu(self)
+        self.menu.add_cascade(label=language_config.get(languages, 'settings'), command=lambda: Setting.open())
+        self.menu.add_cascade(label=language_config.get(languages, 'exit'), command=lambda: os.kill(os.getpid(), 0))
+
+        self.stateus = self.c
+        self.Pause = False
+        self.click_times = 0
+        self.subject = "未知"
+        self.end_time = None
+        self.states = [
+            language_config.get(languages, "statef"),
+            language_config.get(languages, "states"),
+            language_config.get(languages, "statet")
+        ]
+
         with open("./Libs/autoexec.cfg", "r", encoding="utf-8") as f:
             menudata = f.read()
         for _ in menudata.strip().split("\n"):
             self.release(f"./Libs/{_}")
-        self.showMenu(self, self.menu)
+
+        del menudata
+        # 设置的界面
+        self.notebook = ttk.Notebook(self)
+        self.basic_frame = tk.Frame(self.notebook)
+        self.advanced_frame = tk.Frame(self.notebook)
+        self.notebook.add(self.basic_frame, text=language_config.get(languages, "setfg"))
+        self.notebook.add(self.advanced_frame, text=language_config.get(languages, "setfont"))
+        # 基础设置
+        self.size_font_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingsize"))
+        self.size_font_combo = ttk.Combobox(
+            self.basic_frame,
+            values=list(map(lambda v: str(v), range(1, 501))),
+            width=9,
+            state="readonly"
+        )
+        self.trans_font_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingtrans"))
+        self.trans_font_scale = tk.Scale(
+            self.basic_frame,
+            resolution=0.01,
+            from_=0.01,
+            to=1,
+            orient=tk.HORIZONTAL,
+            command=Setting.view
+        )
+        self.state_font_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingstate"))
+        self.state_font_combo = ttk.Combobox(
+            self.basic_frame,
+            values=['normal', 'bold', 'overstrike', 'italic', 'underline'],
+            width=12,
+            state="readonly"
+        )
+        self.state_value = tk.BooleanVar()
+        if len(self.c) > 1:
+            self.state_value.set(True)
+        else:
+            self.state_value.set(False)
+        self.more_state_checkbtn = tk.Checkbutton(
+            self.basic_frame,
+            text=language_config.get(languages, "stateus_append"),
+            variable=self.state_value,
+            onvalue=True,
+            offvalue=False
+        )
+        self.fore_color_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingcolor"))
+        self.fore_color_btn = tk.Button(
+            self.basic_frame,
+            text=language_config.get(languages, "choosebtn"),
+            command=Setting.fore_color_chooser
+        )
+        self.back_color_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingbgcolor"))
+        self.back_color_btn = tk.Button(
+            self.basic_frame,
+            text=language_config.get(languages, "choosebtn"),
+            command=Setting.back_color_chooser
+        )
+        self.cancel_btn = tk.Button(
+            self,
+            text=language_config.get(languages, "cancel"),
+            fg="red",
+            command=lambda: Setting.play_disappear()
+        )
+        self.apply_btn = tk.Button(
+            self,
+            text=language_config.get(languages, "apply"),
+            fg="green",
+            command=Setting.apply
+        )
+
+        self.size_font_combo.set(self.size)
+        self.state_font_combo.set(self.c[0])
+        self.trans_font_scale.set(float(self.trans))
+        # 高级设置
+        columns = {"ID": 50, "字体名字": 400}
+        self.yscroll = tk.Scrollbar(self.advanced_frame, orient=tk.VERTICAL)
+        self.set_font_treeview = ttk.Treeview(
+            self.advanced_frame,
+            show="headings",
+            columns=list(columns),
+            height=12,
+            yscrollcommand=self.yscroll.set
+        )
+        for text, width in columns.items():
+            self.set_font_treeview.heading(text, text=text, anchor='center')
+            self.set_font_treeview.column(text, anchor='center', width=width, stretch=False)
+        font_families = font.families()
+        for i in range(len(font_families)):
+            self.set_font_treeview.insert('', tk.END, values=[i, font_families[i]])
+        del font_families
+        self.set_language_label = tk.Label(self.advanced_frame, text=language_config.get(languages, 'setlanguage'))
+        self.set_language_combo = ttk.Combobox(
+            self.advanced_frame,
+            values=language_config.sections(),
+            width=13,
+            state="readonly"
+        )
+        self.set_language_combo.set(languages)
+        # 启动
+        self.bind("<B1-Motion>", self.move)
+        self.lbl.bind("<Double-Button-1>", lambda event: self.alpha())
+        self.showmenu(self, self.menu)
         self.lbl.pack()
         self.update_time()
 
     def move(self, event):
-        self.geometry("+{0}+{1}".format(event.x_root, event.y_root))
-
-    def _settings(self):
-        if self.achieve.get("finished", "OpenSetting") == "0":
-            self.achieve_(" 哟，这不设置吗？")
-            self.achieve.set("finished", "OpenSetting", "1")
-            with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
-                self.achieve.write(f)
-                f.close()
-
-        def finish():
-            w_config = configparser.ConfigParser()
-            w_config.read("./Libs/resource/settings.ini",encoding="utf-8")
-            languages = language.get()
-            self.trans = trans_sca.get()
-            self.size = size_com.get()
-            self.c = state_com.get()
-            w_config.set("fgwindow", "trans", str(self.trans))
-            w_config.set("fgwindow", "size", str(self.size))
-            w_config.set("fgwindow", "color", str(self.fg_color))
-            w_config.set("fgwindow", "type", str(self.type))
-            w_config.set("fgwindow", "state", str(self.c))
-            w_config.set("bgwindow", "color", str(self.bg_color))
-            w_config.set("program", "language", str(languages))
-            try:
-                with open("./Libs/resource/settings.ini","w",encoding="utf-8") as f:
-                    w_config.write(f)
-            except UnicodeDecodeError:
-                with open("./Libs/resource/settings.ini","w",encoding="gb18030") as f:
-                    w_config.write(f)
-            settings.destroy()
-            self.destroy()
-            tkinter.messagebox.showwarning(language_config.get(self.language,"warntitle"),language_config.get(self.language,"warnmsg"))
-            exit(0)
-
-        def choose_color(who):
-            color = colorchooser.askcolor(title=language_config.get(self.language,"choosecolor"))
-            if color[1]:
-                hex_color = color[1]
-                if who == "bg":
-                    self.bg_color = hex_color
-                elif who == "fg":
-                    self.fg_color = hex_color
-        settings = tk.Tk()
-        settings.title(language_config.get(self.language,"programsettings"))
-        settings.geometry(f"1000x600+{self.winfo_x()+100}+{self.winfo_y()+50}")
-        settings.tk.call('tk', 'scaling', int(self.dll.GetScale())/75)
-        notebook = Notebook(settings)
-        set_fg = Frame(notebook)
-        set_font = Frame(notebook)
-        other = Frame(notebook)
-        notebook.add(set_fg, text=language_config.get(self.language,"setfg"))
-        notebook.add(set_font, text=language_config.get(self.language,"setfont"))
-        notebook.add(other, text=language_config.get(self.language,"setother"))
-
-        # 悬浮窗
-        size = Label(set_fg, text=language_config.get(self.language,"floatingsize"))
-        trans = Label(set_fg, text=language_config.get(self.language,"floatingtrans"))
-        state = Label(set_fg, text=language_config.get(self.language, "floatingstate"))
-        state_com = Combobox(set_fg, values=['normal', 'bold', 'overstrike', 'italic', 'underline'], state="readonly")
-        state_com.set(self.c)
-        trans_sca = Scale(set_fg, from_=0.01, to=1,resolution=0.01,orient=tk.HORIZONTAL)
-        trans_sca.set(self.trans)
-        size_com = Combobox(set_fg, values=list(range(1,251)), state="readonly")
-        size_com.set(self.size)
-        fg_color = Label(set_fg, text=language_config.get(self.language,"floatingcolor"))
-        bg_color = Label(set_fg, text=language_config.get(self.language,"floatingbgcolor"))
-        color_btn1 = Button(set_fg, text=language_config.get(self.language,"choosebtn"),command=lambda: choose_color("fg"))
-        color_btn2 = Button(set_fg, text=language_config.get(self.language,"choosebtn"), command=lambda: choose_color("bg"))
-
-        size.place(x=int(language_config.get(self.language,"sx")),y=int(language_config.get(self.language,"sy")))
-        size_com.place(x=int(language_config.get(self.language,"bx")),y=int(language_config.get(self.language,"sy")))
-        state.place(x=int(language_config.get(self.language,"sx")), y=200)
-        state_com.place(x=int(language_config.get(self.language,"mx")), y=200)
-        trans.place(x=int(language_config.get(self.language,"sx")), y=int(language_config.get(self.language,"my")))
-        trans_sca.place(x=int(language_config.get(self.language,"bx")), y=int(language_config.get(self.language,"mmy")))
-        fg_color.place(x=int(language_config.get(self.language,"sx")), y=int(language_config.get(self.language,"by")))
-        bg_color.place(x=int(language_config.get(self.language,"sx")), y=int(language_config.get(self.language,"bby")))
-        color_btn1.place(x=int(language_config.get(self.language,"mx")), y=int(language_config.get(self.language,"by")))
-        color_btn2.place(x=int(language_config.get(self.language,"mx")), y=int(language_config.get(self.language,"bby")))
-
-        # 字体
-        def get():
-            self.type = fonts.get(fonts.curselection())
-            self.c = state_com.get()
-            show_font.config(text=f"{language_config.get(self.language,'choosing')} {self.type}")
-            display_font4.config(text="这是预览效果  空格\nHere is the preview effect  space\nプレビュー効果は次のとおりです  箜\n1 2 3 4 5 6 7 8 9 0",font=(self.type, 20, self.c), fg=self.fg_color, bg=self.bg_color)
-
-        fonts = Listbox(set_font, width=40,height=30)
-        fonts.place(x=5,y=5)
-        show_font = Label(set_font, text=language_config.get(self.language,'choosing'))
-        show_font.place(x=300,y=10)
-        display_font4 = Label(set_font, text="这是预览效果  空格\nHere is the preview effect  space\nプレビュー効果は次のとおりです  箜\n1 2 3 4 5 6 7 8 9 0",font=(self.type, 20, self.c), fg=self.fg_color, bg=self.bg_color)
-        display_font4.place(x=300, y=90)
-        family = list(font.families())
-        for font_name in family:
-            fonts.insert(tk.END, font_name)
-        fonts.bind("<<ListboxSelect>>", lambda event: get())
-        notebook.pack(expand=True, fill=tk.BOTH)
-        roll = tk.Scrollbar(set_font, orient="vertical")
-        roll.config(command=fonts.yview)
-        fonts.config(yscrollcommand=roll.set)
-        roll.pack(side="right", fill="y")
-        global_ = Button(settings, text=language_config.get(self.language,'apply'),command=finish)
-        cancel = Button(settings, text=language_config.get(self.language,'cancel'),command=settings.destroy)
-        global_.place(x=800,y=550)
-        cancel.place(x=700,y=550)
-
-        # 其他设置
-        frame = Frame(other, borderwidth=2, relief="solid")
-        frame.place(x=5,y=50)
-        def execute():
-            if self.achieve.get("finished", "ExecPlugins") == "0":
-                self.achieve_("插件开辟新征程！")
-                self.achieve.set("finished", "ExecPlugins", "1")
-                with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
-                    self.achieve.write(f)
-                    f.close()
-            info = tk.Tk()
-            info.geometry(f"+{settings.winfo_x()+200}+{settings.winfo_y()+100}")
-            info.overrideredirect(True)
-            Label(info, text="======================\nFinished\nSuccessful executing this plugins\nFinished\n======================", fg="green").pack()
-            info.after(1000, info.destroy)
-            self.release("./Libs/"+choose_pyl.get())
-            info.mainloop()
-
-        def autoexec():
-            info = tk.Tk()
-            info.geometry(f"+{settings.winfo_x()+200}+{settings.winfo_y()+100}")
-            info.overrideredirect(True)
-            Label(info, text="======================\nFinished\nSuccessful auto exec this plugins\nFinished\n======================", fg="green").pack()
-            info.after(1000, info.destroy)
-            with open("./Libs/autoexec.cfg", "r", encoding="utf-8") as f:
-                had_file = f.read()
-            if choose_pyl.get() in had_file:
-                with open("./Libs/autoexec.cfg", "r", encoding="utf-8") as f:
-                    ori_data = f.read()
-                with open("./Libs/autoexec.cfg", "w", encoding="utf-8") as f:
-                    data = ori_data.replace(choose_pyl.get(), "")
-                    f.write(data+"\n")
-            else:
-                with open("./Libs/autoexec.cfg", "a", encoding="utf-8") as f:
-                    f.write(choose_pyl.get()+"\n")
-            info.mainloop()
-
-        Label(frame, text="Plugins：").pack()
-        pyl_file = [file for file in os.listdir("./Libs") if file.endswith(".pyl")]
-        choose_pyl = Combobox(frame, values=pyl_file, state="readonly")
-        choose_pyl.set("None Plugins")
-        choose_pyl.pack()
-        run_pyl = Button(frame, text="▶ EXECUTE ▶", command=execute)
-        autorun_pyl = Button(frame, text="▶ AUTO EXECUTE ▶", command=autoexec)
-        autorun_pyl.pack()
-        run_pyl.pack()
-
-        def run():
-            if runner['text'] == "Run ▶":
-                runner['text'] = "Stop ■"
-                runner['fg'] = "red"
-                execcode = Frame(notebook)
-                notebook.add(execcode, text="Running_information")
-                try:
-                    Label(execcode, text="Title: "+coder.get(1.0, tk.END).split('\n')[0].split('#')[1].strip(), font=("微软雅黑", 30, "underline")).pack()
-                except IndexError:
-                    Label(execcode, text="Title: Unset", font=("微软雅黑", 30, "underline"), fg="blue").pack()
-                Label(execcode, text=f"Running Code:\n{'-='*10}\n {coder.get(1.0, tk.END)}\n{'-='*10}", font=("微软雅黑", 10), fg="purple").pack()
-                try:
-                    mg = globals()
-                    ml = locals()
-                    exec(coder.get(1.0, tk.END), mg, ml)
-                    notebook.forget(3)
-                    runner['text'] = "Run ▶"
-                    runner['fg'] = "#41cc32"
-
-                except Exception as e:
-                    if self.achieve.get("finished", "fRunCode") == "0":
-                        self.achieve_("欸，技术尚待提升")
-                        self.achieve.set("finished", "fRunCode", "1")
-                        with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
-                            self.achieve.write(f)
-                            f.close()
-                    error_note = Frame(notebook)
-                    notebook.add(error_note, text="Running_Error")
-                    Label(error_note, text="RUNNING ERROR:\n==============================\n\n"+str(type(e))+" -> "+str(e)+"\n\n==============================", font=("宋体", 12, "bold"), fg="red").pack()
-
-            else:
-                runner['text'] = "Run ▶"
-                runner['fg'] = "#41cc32"
-                try:
-                    notebook.forget(4)
-                except:
-                    pass
-                finally:
-                    notebook.forget(3)
-                if self.achieve.get("finished", "sRunCode") == "0":
-                    self.achieve_("原来你也会「编程」？！")
-                    self.achieve.set("finished", "sRunCode", "1")
-                    with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
-                        self.achieve.write(f)
-                        f.close()
-
-        def auto_indent(event):
-            text = event.widget
-            line = text.get("insert linestart", "insert")
-            match = re.match(r'^(\s+)', line)
-            whitespace = match.group(0) if match else ""
-            text.insert("insert", f"\n{whitespace}")
-            return "break"
-
-        def import_():
-            if ".pyl" in pyl.get():
-                path = "./Libs/" + pyl.get()
-            else:
-                path = "./Libs/" + pyl.get() + ".pyl"
-            with open(path, "r", encoding="utf-8") as f:
-                code = f.read()
-            coder.delete(1.0, tk.END)
-            coder.insert(1.0, code)
-
-        def save():
-            if not pyl.get().strip() == "":
-                if ".pyl" in pyl.get():
-                    path = "./Libs/"+pyl.get()
-                else:
-                    path = "./Libs/"+pyl.get()+".pyl"
-                with open(path, 'w', encoding="utf-8") as f:
-                    f.write(coder.get(1.0, tk.END))
-                    f.close()
-            else:
-                tkinter.messagebox.showerror(language_config.get(self.language, "savetitle"), language_config.get(self.language, "savemsg"))
-
-        def delete():
-            if tkinter.messagebox.askyesno(language_config.get(self.language, "deltitle"), language_config.get(self.language, "delmsg")):
-                if ".pyl" in pyl.get():
-                    os.remove("./Libs/"+pyl.get())
-                else:
-                    os.remove("./Libs/" + pyl.get()+".pyl")
-
-        Label(other, text=language_config.get(self.language,'setlanguage')).place(x=10,y=10)
-        language = Combobox(other, values=language_config.sections(), state="readonly")
-        language.set(self.language)
-        language.place(x=100,y=10)
-        runner = tk.Button(other, text="Run ▶", font=("黑体", 14, "bold"), bg='#252424',fg='#41cc32', command=run)
-        runner.place(x=400, y=20)
-        tk.Button(other, text="Import ◀", bg='#252424',fg='white', command=import_).place(x=500, y=20)
-        tk.Button(other, text="Save ▼", bg='#252424',fg='white', command=save).place(x=700, y=20)
-        tk.Button(other, text="Delete ▲", font=("黑体", 14, "bold") ,bg='#252424',fg='red', command=delete).place(x=770, y=20)
-        pyl = Combobox(other, values=pyl_file, width=15)
-        try:
-            pyl.set(pyl_file[0])
-        except:
-            pass
-        coder = ScrolledText(other, width=70, height=24, font=("微软雅黑", 10, "bold"))
-        coder.place(x=400,y=60)
-        coder.focus_set()
-        coder.bind("<Return>", auto_indent)
-        idc.color_config(coder)
-        p = idp.Percolator(coder)
-        d = idc.ColorDelegator()
-        p.insertfilter(d)
-        pyl.place(x=570,y=20)
-        
-        settings.mainloop()
-
-    def _exit(self):
-        os.system(f"taskkill /F /PID {os.getpid()}")
-
-    def achieve_(self, text="", subject=""):
-        def show_window():
-            def play_sound():
-                winsound.PlaySound("./Libs/resource/things/get.wav", winsound.SND_LOOP)
-
-            play = threading.Thread(target=play_sound)
-            play.start()
-            achieve.deiconify()
-            achieve.attributes("-alpha", 0)
-            gradually_show()
-
-        def gradually_close():
-            alpha = achieve.attributes("-alpha")
-            if alpha > 0:
-                alpha -= 0.05
-                achieve.attributes("-alpha", alpha)
-                achieve.after(40, gradually_close)
-            else:
-                achieve.tk.quit()
-                os.remove("A.png")
-
-        def gradually_show():
-            alpha = achieve.attributes("-alpha")
-            if alpha < 1:
-                alpha += 0.1
-                achieve.attributes("-alpha", alpha)
-                achieve.after(50, gradually_show)
-            else:
-                time.sleep(random.uniform(1, 2))
-                gradually_close()
-
-        def revise(text, subject):
-            img = Image.open('./Libs/resource/things/template.png')
-            I1 = ImageDraw.Draw(img)
-            I1.text((130, 50), f"{text} {subject}",
-                    font=ImageFont.truetype('./Libs/resource/things/Genshin.ttf', 20), fill=(108, 100, 97))
-            img.save("A.png")
-
-        revise(text=text, subject=subject)
-
-        achieve = tk.Tk()
-        achieve.withdraw()
-        achieve = tk.Toplevel()
-
-        achieve.attributes("-topmost", True)
-        achieve.overrideredirect(True)
-
-        image = tk.PhotoImage(file="A.png")
-        Label(achieve, image=image).pack()
-
-        achieve.geometry(f"+{(achieve.winfo_screenwidth() - 427) // 2}+{(achieve.winfo_screenheight() + 300) // 2}")
-        achieve.after(0, show_window)
-
-        achieve.mainloop()
+        self.geometry(f"+{event.x_root}+{event.y_root}")
 
     def update_time(self):
-        if self.achieve.get("finished", "OpenProgram") == "0":
-            self.achieve_(" 初次见面，请多关照")
-            self.achieve.set("finished", "OpenProgram", "1")
-            with open("./Libs/resource/achieve.ini", "w", encoding="utf-8") as f:
-                self.achieve.write(f)
-                f.close()
-
-        Ymd_time = datetime.datetime.now().strftime("%Y-%m-%d")
-        now_time = datetime.datetime.now().strftime("%H:%M:%S")
-        self.lbl.config(text=now_time)
-        now_day = datetime.datetime.now().strftime("%A")
-        if now_day in class_:
-            for i, class_info in class_[now_day].items():
-                self.subject = class_info["subject"]
-                start_time = class_info["starttime"]
-                self.end_time = class_info["endtime"]
-                state = self.get_state(start_time, self.end_time)
-                if state == self.states[0]:
-                    if self.times < 31:
-                        self.lbl.config(text=f"{Ymd_time} {self.get_week()} {now_time} {state} {self.subject}")
-                    else:
-                        end = datetime.datetime.strptime(self.end_time,'%H:%M:%S') - datetime.datetime.strptime(datetime.datetime.now().strftime("%H:%M:%S"),'%H:%M:%S')
+        if not self.Pause:
+            ymd_time = datetime.datetime.now().strftime("%Y-%m-%d")
+            now_time = datetime.datetime.now().strftime("%H:%M:%S")
+            now_day = datetime.datetime.now().strftime("%A")
+            if now_day in class_:
+                for i, class_info in eval(str(class_[now_day])).items():
+                    self.subject = class_info["subject"]
+                    start_time = class_info["starttime"]
+                    self.end_time = class_info["endtime"]
+                    state = self.get_state(start_time, self.end_time)
+                    if state == self.states[0]:
+                        end = (datetime.datetime.strptime(
+                            self.end_time,
+                            '%H:%M:%S') -
+                               datetime.datetime.strptime(datetime.datetime.now().strftime("%H:%M:%S"),
+                                                          '%H:%M:%S')
+                               )
                         after = str(end).split(":")
-                        after.insert(1, language_config.get(self.language, "hour"))
-                        after.insert(3, language_config.get(self.language, "minute"))
-                        after.insert(5, language_config.get(self.language, "second"))
+                        after.insert(1, language_config.get(languages, "hour"))
+                        after.insert(3, language_config.get(languages, "minute"))
+                        after.insert(5, language_config.get(languages, "second"))
+                        for _ in range(2):
+                            for a in after:
+                                if str(a) == "0" or str(a) == "00":
+                                    index = after.index(a)
+                                    if after[index + 1] != language_config.get(languages, "second"):
+                                        after.remove(a)
+                                        after.pop(index)
+                                    del index
                         after = ''.join(after)
-                        if self.language == language_config.sections()[0]:
-                            self.lbl.config(text=f"我最喜欢学{self.subject}了！！"+language_config.get(self.language, 'after') + str(after))
-                        else:
-                            self.lbl.config(text=language_config.get(self.language, 'after') + " " + str(after))
-                            if self.times > 59:
-                                self.times = 0
-                    break
-                elif state == self.states[1]:
-                    self.lbl.config(text=f"{Ymd_time} {self.get_week()} {now_time} {state} {self.subject}")
-                elif state == self.states[2]:
-                    self.lbl.config(text=f"{Ymd_time} {self.get_week()} {now_time} {state} {self.subject}")
-                    break
-        self.times += 1
-        self.after(100, self.update_time)
+                        self.lbl.config(
+                            text=f"{time.strftime('%H:%M')} "
+                            f"{language_config.get(languages, 'after').replace('{time}', after)}"
+                        )
+                        break
+                    elif state == self.states[1]:
+                        self.lbl.config(text=f"{ymd_time} {self.get_week()} {now_time} {state} {self.subject}")
+                    elif state == self.states[2]:
+                        self.lbl.config(text=f"{ymd_time} {self.get_week()} {now_time} {state} {self.subject}")
+                        break
+            del ymd_time, now_time, now_day
+            self.after(400, self.update_time)
 
-    def inter(self, io):
+    def alpha(self):
+        self.click_times += 1
+        self.attributes("-alpha", 0.2) if self.click_times % 2 == 1 else self.attributes("-alpha", self.trans)
+
+    @staticmethod
+    def inter(io):
         with open(io, "r", encoding="utf-8") as f:
             code = f.read()
         mg = globals()
         ml = locals()
         exec(code, mg, ml)
 
-
-    def release(self,io):
+    def release(self, io):
         try:
             with open(io, "r", encoding="utf-8") as f:
                 name = f.read().split("\n")
             try:
-                self.menu.insert_cascade(index=2,label=name[0].split("#")[1].strip(), command=lambda: self.inter(io))
-            except:
-                self.menu.insert_cascade(index=2,label="Unset", command=lambda: self.inter(io))
-            self.showMenu(self, self.menu)
-        except:
+                self.menu.insert_cascade(index=2, label=name[0].split("#")[1].strip(), command=lambda: self.inter(io))
+            except IndexError:
+                self.menu.insert_cascade(index=2, label="Unset", command=lambda: self.inter(io))
+            self.showmenu(self, self.menu)
+        except PermissionError:
+            pass
+        except OSError:
             pass
 
-
-    def get_week(self,week="none"):
-        if time.strftime("%A") == "Monday": week = language_config.get(self.language, 'monday')
-        elif time.strftime("%A") == "Tuesday": week = language_config.get(self.language, 'tuesday')
-        elif time.strftime("%A") == "Wednesday": week = language_config.get(self.language, 'wednesday')
-        elif time.strftime("%A") == "Thursday": week = language_config.get(self.language, 'thursday')
-        elif time.strftime("%A") == "Friday": week = language_config.get(self.language, 'friday')
-        elif time.strftime("%A") == "Saturday": week = language_config.get(self.language, 'saturday')
-        elif time.strftime("%A") == "Sunday": week = language_config.get(self.language, 'sunday')
+    @staticmethod
+    def get_week(week="none"):
+        if time.strftime("%A") == "Monday":
+            week = language_config.get(languages, 'monday')
+        elif time.strftime("%A") == "Tuesday":
+            week = language_config.get(languages, 'tuesday')
+        elif time.strftime("%A") == "Wednesday":
+            week = language_config.get(languages, 'wednesday')
+        elif time.strftime("%A") == "Thursday":
+            week = language_config.get(languages, 'thursday')
+        elif time.strftime("%A") == "Friday":
+            week = language_config.get(languages, 'friday')
+        elif time.strftime("%A") == "Saturday":
+            week = language_config.get(languages, 'saturday')
+        elif time.strftime("%A") == "Sunday":
+            week = language_config.get(languages, 'sunday')
         return week
 
     def get_state(self, start, end) -> str:
@@ -536,12 +330,210 @@ class Clock(tk.Tk):
         else:
             return self.states[1]
 
-    def showMenu(self,w, menu):
-        def popout(event):
+    @staticmethod
+    def showmenu(w, menu):
+        def poput(event):
             menu.post(event.x + w.winfo_rootx(), event.y + w.winfo_rooty())
             w.update()
-        w.bind('<Button-3>', popout)
+        w.lbl.bind('<Button-3>', poput)
 
+
+class Setting(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.text = Clock.lbl['text']
+        self.count = -1
+        self.y = 0
+        self.x = 0
+        self.withdraw()
+
+    def open(self):
+        self.__init__()
+        Clock.Pause = True
+        self.play_show()
+
+    def close(self):
+        if tk.messagebox.askyesno(
+            language_config.get(languages, "settings_title"),
+            language_config.get(languages, "settings_msg")
+        ):
+            self.text = Clock.lbl['text']
+            Clock.overrideredirect(True)
+            self.play_disappear()
+
+    def play_disappear(self):
+        Clock.geometry(f"{self.x}x{self.y}")
+        if self.x != 0 and self.y != 0:
+            self.x -= 10
+            self.y -= 10
+            self.after(10, self.play_disappear)
+        else:
+            os.kill(os.getpid(), 0)
+
+    def play_show(self):
+        self.count += 1
+        if self.count < len(self.text):
+            Clock.lbl['text'] = self.text[self.count:]
+            self.after(20, self.play_show)
+        else:
+            Clock.geometry(f"{self.x}x{self.y}")
+            Clock.attributes("-topmost", False)
+            Clock.attributes("-alpha", 1)
+            Clock.lbl['text'] = (f"Display {language_config.get(languages, 'settings')}\n"
+                                 f"first. Welcome to {time.strftime('%Y')}\n"
+                                 f"second\n"
+                                 f"\n"
+                                 f"Display by QQ: 2953911716\n"
+                                 f"It's Free and open-source Software!\n"
+                                 f"The Open-Source URL is on github.com")
+            if self.x != 500 and self.y != 600:
+                self.x += 10
+                self.y += 10
+                self.after(10, self.play_show)
+            else:
+                Clock.protocol("WM_DELETE_WINDOW", self.close)
+                Clock.title(f"{language_config.get(languages, 'settings')} - Display")
+                Clock.overrideredirect(False)
+                Clock.Pause = False
+                Clock.update_time()
+                self.settings()
+
+    @staticmethod
+    def fore_color_chooser():
+        color = colorchooser.askcolor(title=language_config.get(languages, "choosecolor"))
+        if color[1]:
+            hex_color = color[1]
+            Clock.lbl.config(fg=str(hex_color))
+
+    @staticmethod
+    def back_color_chooser():
+        color = colorchooser.askcolor(title=language_config.get(languages, "choosecolor"))
+        if color[1]:
+            hex_color = color[1]
+            Clock.lbl.config(bg=str(hex_color))
+
+    @staticmethod
+    def view(event=None):
+        global languages
+        languages = Clock.set_language_combo.get()
+        try:
+            items = Clock.set_font_treeview.selection()[0]
+            selected_font = Clock.set_font_treeview.item(items)['values'][-1]
+        except IndexError:
+            selected_font = Clock.config.get("fgwindow", "type")
+        if Clock.state_value.get():
+            if Clock.state_font_combo.get() not in Clock.stateus:
+                Clock.stateus.append(Clock.state_font_combo.get())
+        else:
+            Clock.stateus = [Clock.state_font_combo.get()]
+        Clock.lbl.config(
+            font=(
+                selected_font,
+                int(Clock.size_font_combo.get()),
+                [Clock.stateus[i] for i in range(len(Clock.stateus))]
+            )
+        )
+        if isinstance(event, str):
+            Clock.attributes("-alpha", float(event))
+
+    @staticmethod
+    def apply():
+        config = Clock.config
+        try:
+            items = Clock.set_font_treeview.selection()[0]
+            selected_font = Clock.set_font_treeview.item(items)['values'][-1]
+        except IndexError:
+            selected_font = config.get("fgwindow", "type")
+            pass
+        config.set("fgwindow", "trans", str(Clock.attributes("-alpha")))
+        config.set("fgwindow", "size", Clock.size_font_combo.get())
+        config.set("fgwindow", "color", Clock.lbl['fg'])
+        config.set("fgwindow", "type", selected_font)
+        config.set("fgwindow", "state", ','.join(Clock.stateus))
+        # 背景
+        config.set("bgwindow", "color", Clock.lbl['bg'])
+        # 程序
+        config.set("program", "language", languages)
+        try:
+            with open(f"{os.getcwd()}/Libs/resource/settings.ini", "w", encoding="utf-8") as f:
+                config.write(f)
+        except UnicodeDecodeError:
+            with open(f"{os.getcwd()}/Libs/resource/settings.ini", "w", encoding="gb18030") as f:
+                config.write(f)
+        tkinter.messagebox.showinfo(
+            language_config.get(languages, "warntitle"),
+            language_config.get(languages, "warnmsg")
+        )
+        os.kill(os.getpid(), 0)
+
+    def settings(self):
+        Clock.call("tk", "scaling", 1.3)
+        Clock.unbind("<B1-Motion>")
+        Clock.yscroll.config(command=Clock.set_font_treeview.yview)
+        Clock.yscroll.pack(side=tk.RIGHT, fill=tk.Y)
+        Clock.size_font_label.place(
+            x=int(language_config.get(languages, "sx")),
+            y=int(language_config.get(languages, "sy"))
+        )
+        Clock.size_font_combo.place(
+            x=int(language_config.get(languages, "bx")),
+            y=int(language_config.get(languages, "sy"))
+        )
+        Clock.trans_font_label.place(
+            x=int(language_config.get(languages, "sx")),
+            y=int(language_config.get(languages, "my"))
+        )
+        Clock.trans_font_scale.place(
+            x=int(language_config.get(languages, "bx")),
+            y=int(language_config.get(languages, "mmy"))
+        )
+        Clock.state_font_label.place(
+            x=int(language_config.get(languages, "sx")),
+            y=200
+        )
+        Clock.state_font_combo.place(
+            x=int(language_config.get(languages, "mx")),
+            y=200
+        )
+        Clock.more_state_checkbtn.place(
+            x=int(language_config.get(languages, "mx")) + 150,
+            y=200
+        )
+        Clock.fore_color_label.place(
+            x=int(language_config.get(languages, "sx")),
+            y=int(language_config.get(languages, "by"))
+        )
+        Clock.fore_color_btn.place(
+            x=int(language_config.get(languages, "mx")),
+            y=int(language_config.get(languages, "by"))
+        )
+        Clock.back_color_label.place(
+            x=int(language_config.get(languages, "sx")),
+            y=int(language_config.get(languages, "bby"))
+        )
+        Clock.back_color_btn.place(
+            x=int(language_config.get(languages, "mx")),
+            y=int(language_config.get(languages, "bby"))
+        )
+        Clock.set_language_label.place(
+            x=int(language_config.get(languages, "mx")) // 3 - int(language_config.get(languages, "sx")),
+            y=int(language_config.get(languages, "bby")) * 2
+        )
+        Clock.set_language_combo.place(
+            x=int(language_config.get(languages, "mx")),
+            y=int(language_config.get(languages, "bby")) * 2
+        )
+        Clock.set_font_treeview.pack()
+        Clock.cancel_btn.place(x=300, y=400)
+        Clock.apply_btn.place(x=400, y=400)
+        Clock.set_font_treeview.bind("<<TreeviewSelect>>", self.view)
+        Clock.size_font_combo.bind("<<ComboboxSelected>>", self.view)
+        Clock.state_font_combo.bind("<<ComboboxSelected>>", self.view)
+        Clock.set_language_combo.bind("<<ComboboxSelected>>", self.view)
+        Clock.notebook.pack(fill=tk.BOTH, expand=True)
+
+
+Clock = Clock()
+Setting = Setting()
 if __name__ == '__main__':
-    starting()
-    Clock().mainloop()
+    Clock.mainloop()
