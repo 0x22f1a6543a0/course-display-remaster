@@ -146,6 +146,11 @@ class Clock(tk.Tk):
         self.date_notebook.add(self.Saturday_frame, text=language_config.get(languages, "saturday"))
         self.date_notebook.add(self.Sunday_frame, text=language_config.get(languages, "sunday"))
         # 课表设置
+        self.set_subject_btn = tk.Button(
+            self.class_frame,
+            text=language_config.get(languages, "set_subject"),
+            command=Setting.set_subject
+        )
         all_date = [
             self.Monday_frame, self.Tuesday_frame,
             self.Wednesday_frame, self.Thursday_frame,
@@ -159,7 +164,7 @@ class Clock(tk.Tk):
             text=language_config.get(languages, "set_time"),
             command=Setting.set_time
         )
-        self.info_text = tk.Text(self.class_frame, width=45, height=5)
+        self.info_text = tk.Text(self.class_frame, width=35, height=5, font=("微软雅黑", 8))
         self.date_treeview_list = []
         columns = {"ID": 50, "星期": 100, "科目名称": 80, "开始时间": 80, "结束时间": 80, "状态": 50}
         count = 0
@@ -476,12 +481,45 @@ class Setting(tk.Tk):
         global class_
         if Clock.status_btn['text'] == language_config.get(languages, "enable"):
             class_[self.selected[1]][str(self.selected[0])]['enable'] = True
+            Clock.status_btn['text'] = language_config.get(languages, "disable")
         else:
             if tkinter.messagebox.askyesno(
                     language_config.get(languages, "settings_enable_title"),
                     language_config.get(languages, "settings_enable_msg")
             ):
                 class_[self.selected[1]][str(self.selected[0])]['enable'] = False
+                Clock.status_btn['text'] = language_config.get(languages, "enable")
+        self.write()
+
+    def set_time(self):
+        global class_
+        input_time: list = Clock.time_entry.get().split("-")
+        try:
+            _ = datetime.datetime.strptime(
+                input_time[0], "%H:%M:%S"
+            )
+            _ = datetime.datetime.strptime(
+                input_time[1], "%H:%M:%S"
+            )
+            del _
+        except ValueError:
+            tkinter.messagebox.showerror(
+                language_config.get(languages, "set_time_title_error"),
+                language_config.get(languages, "set_time_msg_error").replace(
+                    "{time}", '-'.join(input_time)
+                )
+            )
+            return
+        class_[self.selected[1]][str(self.selected[0])]['starttime'] = str(input_time[0])
+        class_[self.selected[1]][str(self.selected[0])]['endtime'] = str(input_time[1])
+        self.write()
+
+    def set_subject(self):
+        global class_
+        class_[self.selected[1]][str(self.selected[0])]['subject'] = str(Clock.time_entry.get())
+        self.write()
+
+    def write(self):
         try:
             with open(f'{os.getcwd()}/Libs/resource/class.json', 'w', encoding='utf-8') as f:
                 json.dump(class_, f, indent=3, ensure_ascii=False)
@@ -494,48 +532,9 @@ class Setting(tk.Tk):
                     language_config.get(languages, "set_time_title_error"),
                     language_config.get(languages, "open_file_error")
                 )
-        self.update_class()
-
-    def set_time(self):
-        global class_
-        if tkinter.messagebox.askyesno(
-            language_config.get(languages, "settings_enable_title"),
-            language_config.get(languages, "settings_enable_title")
-        ):
-            input_time: list = Clock.time_entry.get().split("-")
-            try:
-                _ = datetime.datetime.strptime(
-                    input_time[0], "%H:%M:%S"
-                )
-                _ = datetime.datetime.strptime(
-                    input_time[1], "%H:%M:%S"
-                )
-                del _
-            except ValueError:
-                tkinter.messagebox.showerror(
-                    language_config.get(languages, "set_time_title_error"),
-                    language_config.get(languages, "set_time_msg_error").replace(
-                        "{time}", '-'.join(input_time)
-                    )
-                )
                 return
-            class_[self.selected[1]][str(self.selected[0])]['starttime'] = str(input_time[0])
-            class_[self.selected[1]][str(self.selected[0])]['endtime'] = str(input_time[1])
-            try:
-                with open(f'{os.getcwd()}/Libs/resource/class.json', 'w', encoding='utf-8') as f:
-                    json.dump(class_, f, indent=3, ensure_ascii=False)
-            except UnicodeDecodeError:
-                try:
-                    with open(f'{os.getcwd()}/Libs/resource/class.json', 'w', encoding='gb18030') as f:
-                        json.dump(class_, f, indent=3, ensure_ascii=False)
-                except UnicodeDecodeError:
-                    tkinter.messagebox.showerror(
-                        language_config.get(languages, "set_time_title_error"),
-                        language_config.get(languages, "open_file_error")
-                    )
-                    return
-            finally:
-                self.update_class()
+        finally:
+            self.update_class()
 
     def swich(self):
         for tree in Clock.date_treeview_list:
@@ -551,7 +550,7 @@ class Setting(tk.Tk):
         else:
             return
 
-        Clock.info_text.insert(tk.END, f"{self.selected}\n")
+        Clock.info_text.insert(tk.END, f"{self.selected}\n\n")
         Clock.info_text.yview_moveto(True)
         Clock.info_text.update()
         Clock.time_entry.delete(0, tk.END)
@@ -684,12 +683,13 @@ class Setting(tk.Tk):
             x=int(language_config.get(languages, "mx")),
             y=int(language_config.get(languages, "bby")) * 2
         )
-        Clock.set_time_btn.place(x=350, y=300)
+        Clock.set_subject_btn.place(x=240, y=300)
+        Clock.set_time_btn.place(x=330, y=300)
         Clock.status_btn.place(x=420, y=300)
         for tree in Clock.date_treeview_list:
             tree.bind("<<TreeviewSelect>>", lambda event: self.swich())
             tree.place(x=0, y=0)
-        Clock.time_entry.place(x=330, y=260)
+        Clock.time_entry.place(x=280, y=260)
         Clock.info_text.place(x=0, y=260)
         Clock.set_font_treeview.pack()
         Clock.cancel_btn.place(x=300, y=400)
