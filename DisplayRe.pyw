@@ -146,6 +146,13 @@ class Clock(tk.Tk):
         self.date_notebook.add(self.Saturday_frame, text=language_config.get(languages, "saturday"))
         self.date_notebook.add(self.Sunday_frame, text=language_config.get(languages, "sunday"))
         # 课表设置
+        all_date = [
+            self.Monday_frame, self.Tuesday_frame,
+            self.Wednesday_frame, self.Thursday_frame,
+            self.Friday_frame, self.Saturday_frame,
+            self.Sunday_frame
+        ]
+        self.yscroll_time_list = [tk.Scrollbar(d, orient=tk.VERTICAL) for d in all_date]
         self.time_entry = tk.Entry(self.class_frame)
         self.set_time_btn = tk.Button(
             self.class_frame,
@@ -154,25 +161,27 @@ class Clock(tk.Tk):
         )
         self.info_text = tk.Text(self.class_frame, width=45, height=5)
         self.date_treeview_list = []
-        columns = {"ID": 50, "星期": 100, "科目名称": 80, "开始时间": 80, "结束时间": 80, "状态": 80}
-        for d in [
-            self.Monday_frame, self.Tuesday_frame,
-            self.Wednesday_frame, self.Thursday_frame,
-            self.Friday_frame, self.Saturday_frame,
-            self.Sunday_frame
-        ]:
-            tree = ttk.Treeview(d, show="headings", columns=list(columns))
+        columns = {"ID": 50, "星期": 100, "科目名称": 80, "开始时间": 80, "结束时间": 80, "状态": 50}
+        count = 0
+        for d in all_date:
+            tree = ttk.Treeview(
+                d,
+                show="headings",
+                columns=list(columns),
+                yscrollcommand=self.yscroll_time_list[count].set
+            )
+            self.yscroll_time_list[count].config(command=tree.yview)
             for text, width in columns.items():
                 tree.heading(text, text=text, anchor='center')
                 tree.column(text, anchor='center', width=width, stretch=False)
             self.date_treeview_list.append(tree)
-        del tree
+            count += 1
+        del tree, count
         self.status_btn = tk.Button(
             self.class_frame,
             text=language_config.get(languages, "disable"),
             command=Setting.change_status
         )
-
         # 基础设置
         self.size_font_label = tk.Label(self.basic_frame, text=language_config.get(languages, "floatingsize"))
         self.size_font_combo = ttk.Combobox(
@@ -253,7 +262,7 @@ class Clock(tk.Tk):
         font_families = font.families()
         for i in range(len(font_families)):
             self.set_font_treeview.insert('', tk.END, values=[i, font_families[i]])
-        del font_families
+        del font_families, all_date
         self.set_language_label = tk.Label(self.advanced_frame, text=language_config.get(languages, 'setlanguage'))
         self.set_language_combo = ttk.Combobox(
             self.advanced_frame,
@@ -611,10 +620,17 @@ class Setting(tk.Tk):
         )
         os.kill(os.getpid(), 0)
 
+    @staticmethod
+    def scroll_show():
+        for yscroll in Clock.yscroll_time_list:
+            yscroll.pack_forget()
+        Clock.yscroll_time_list[Clock.date_notebook.index(tk.CURRENT)].pack(side=tk.RIGHT,  fill=tk.Y)
+
     def settings(self):
         Clock.call("tk", "scaling", 1.3)
         Clock.unbind("<B1-Motion>")
         Clock.yscroll.config(command=Clock.set_font_treeview.yview)
+        self.scroll_show()
         Clock.yscroll.pack(side=tk.RIGHT, fill=tk.Y)
         Clock.size_font_label.place(
             x=int(language_config.get(languages, "sx")),
@@ -672,8 +688,8 @@ class Setting(tk.Tk):
         Clock.status_btn.place(x=420, y=300)
         for tree in Clock.date_treeview_list:
             tree.bind("<<TreeviewSelect>>", lambda event: self.swich())
-            tree.pack()
-        Clock.time_entry.place(x=340, y=260)
+            tree.place(x=0, y=0)
+        Clock.time_entry.place(x=330, y=260)
         Clock.info_text.place(x=0, y=260)
         Clock.set_font_treeview.pack()
         Clock.cancel_btn.place(x=300, y=400)
@@ -682,6 +698,7 @@ class Setting(tk.Tk):
         Clock.size_font_combo.bind("<<ComboboxSelected>>", self.view)
         Clock.state_font_combo.bind("<<ComboboxSelected>>", self.view)
         Clock.set_language_combo.bind("<<ComboboxSelected>>", self.view)
+        Clock.date_notebook.bind("<<NotebookTabChanged>>", lambda event: self.scroll_show())
         Clock.notebook.pack(fill=tk.BOTH, expand=True)
         Clock.date_notebook.pack(fill=tk.BOTH, expand=True)
         self.update_class()
