@@ -211,11 +211,7 @@ class Clock(tk.Tk):
             width=12,
             state="readonly"
         )
-        self.state_value = tk.BooleanVar()
-        if len(self.c) > 1:
-            self.state_value.set(True)
-        else:
-            self.state_value.set(False)
+        self.state_value = tk.BooleanVar(self.basic_frame)
         self.more_state_checkbtn = tk.Checkbutton(
             self.basic_frame,
             text=language_config.get(languages, "stateus_append"),
